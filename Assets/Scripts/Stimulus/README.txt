@@ -1,10 +1,12 @@
 HOW TO USE THE STIMULUS COMPONENT:
-A "Stimulus" is a component that, when triggered, plays an animation with optional sound. It requires an Animator component and an AudioSource component and will generate them automatically if they do not exist already. A stimulus can be triggered via a Unity Event (buttons, UI, in-game events, etc.) using the "TriggerStimulus()" callback, or via an Input Action Event (keystroke, controller action, etc.) by adding the "Stimulus Action Trigger" component to the same GameObject and selecting an Input Action Reference. 
+A "Stimulus" is a component that, when triggered, plays an animation and/or a sound. A stimulus can be triggered via a Unity Event (buttons, UI, in-game events, etc.) using the "TriggerStimulus()" callback, or via an Input Action Event (keystroke, controller action, etc.) by adding the "Stimulus Action Trigger" component to the same GameObject and selecting an Input Action Reference. 
 
 The fields of the Stimulus component have tooltips in the Inspector when hovered. 
 
+Also, if there is any confusion in the use of the Stimulus component, comprehensive debug logs will assist their use.
+
 1. Add the Stimulus component to the GameObject.
-2. Ensure the animation controller for the desired GameObject is set up to use a single Boolean parameter to trigger the desired animation. Type the name of this parameter into the "Animation Trigger Parameter Name" field in the Inspector.
+2. If an animation is to be triggered, ensure the animation controller for the desired GameObject is set up to use a single Boolean parameter to trigger the desired animation. Type the name of this parameter into the "Animation Trigger Parameter Name" field in the Inspector.
 3. Ensure that when the Scene is run, the triggering parameter for the animation is in its idle, untriggered state.
 4. Assign the animator for the desired GameObject, the Audio Source if needed, and an Audio Clip (mp3, etc.) if sound is included as part of this stimulus. 
 5. The Stimulus component has a public function called "TriggerStimulus()" that can be called as a UnityEvent or a System.Action, which allows it to be called by buttons or other interactions, within XR or the UI toolkit. 

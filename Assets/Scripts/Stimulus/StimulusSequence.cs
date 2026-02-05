@@ -4,6 +4,9 @@ using UnityEngine.InputSystem;
 
 public class StimulusSequence : MonoBehaviour
 {
+    // Stores the name of the Stimulus trigger function so it is not used directly.
+    private const string stimulusTriggerFunctionName = "TriggerStimulus";
+
     [System.Serializable]
     public class Step
     {
@@ -35,7 +38,7 @@ public class StimulusSequence : MonoBehaviour
         // Trigger the step's stimulus after its pre-trigger delay and proceed to the next step after the current's post-trigger delay.
         foreach (var step in stimuli) 
         {
-            step.stimulus.Invoke("TriggerStimulus", step.preTriggerDelay);
+            step.stimulus.Invoke(stimulusTriggerFunctionName, step.preTriggerDelay);
             
             Invoke(nameof(HoldUp), step.postTriggerDelay);
         }

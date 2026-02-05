@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(AudioSource))]
 [System.Serializable]
 public class Stimulus : MonoBehaviour
 {
@@ -26,14 +24,34 @@ public class Stimulus : MonoBehaviour
     [SerializeField] private bool resetAfterAnimationEnds = true;
 
     [Tooltip("The wait time in seconds after triggering the stimulus before resetting. ")]
-    [SerializeField] [Range(0.0f, 120.0f)] private float manualResetDelay = 0.0f;
+    [SerializeField] [Range(0.0f, 120.0f)] private float manualAnimationResetDelay = 0.0f;
 
     // The default state of the animator. Assumes the animator's default state is idle.
     private bool idleState;
 
+    // Used to track the presence of the Animator, the Audio Source, and the Stimulus Sound.
+    private bool hasAnimator;
+    private bool hasAudioSource;
+    private bool hasStimulusSound;
+
     void Start()
     {
-        idleState = animator.GetBool(animationTriggerParameterName);
+        hasAnimator = animator != null;
+        hasAudioSource = audioSource != null;
+        hasStimulusSound = stimulusSound != null;
+
+        if (!hasAnimator && !hasAudioSource) 
+        {
+            Debug.LogWarning("No animator or audio source attached to Stimulus on " + gameObject.name + ". Please assign in the inspector.");
+            enabled = false;
+            return;
+        }
+
+        if (hasAnimator)
+            idleState = animator.GetBool(animationTriggerParameterName);
+
+        if (hasAudioSource && !hasStimulusSound)
+            Debug.LogWarning("Audio Source assigned to Stimulus on " + gameObject.name + " without assigned Stimulus sound. Please assign it in the inspector.");
     }
 
     // Input Action-based callback for triggering this Stimulus.
@@ -46,33 +64,38 @@ public class Stimulus : MonoBehaviour
     // Trigger the Stimulus and set the animator's trigger parameter to triggered. Only call if the animation has been reset.
     public void TriggerStimulus()
     {
-        bool state = animator.GetBool(animationTriggerParameterName);
-        // Only trigger this Stimulus if it is idle. 
-        if (state != idleState) 
+        if (hasAnimator)
         {
-            Debug.LogWarning("Attempted to trigger Stimulus " + gameObject.name + ", use ResetStimulus() to reset its state.");
-            return;
-        }
+            bool state = animator.GetBool(animationTriggerParameterName);
+            
+            // Only trigger this Stimulus if it is idle. 
+            if (state != idleState) 
+                Debug.LogWarning("Attempted to trigger animation for Stimulus " + gameObject.name + ", use ResetStimulus() to reset its state.");
 
-        // Trigger the Stimulus and log its state to the console.
-        state = !state;
-        animator.SetBool(animationTriggerParameterName, state);
-        Debug.Log(gameObject.name + " Stimulus triggered successfully");
+            // Trigger the Stimulus and log its state to the console.
+            state = !state;
+            animator.SetBool(animationTriggerParameterName, state);
+            Debug.Log("Animation triggered successfully for " + gameObject.name + " Stimulus.");
+
+            // Reset this stimulus.
+            if (resetAfterTrigger) 
+            {
+                float delay = resetAfterAnimationEnds ? GetAnimationLength() : manualAnimationResetDelay;
+                Invoke(nameof(this.ResetAnimation), delay);
+            }
+        }
 
         // If the AudioSource and Sound are specified, play the sound. Otherwise, log their state to the console and don't play the sound.
-        if (audioSource != null && stimulusSound != null)
-            audioSource.PlayOneShot(stimulusSound);
-        else
-            Debug.Log("Audio Source " + (audioSource == null ? "not set" : "set") + ", Stimulus Sound " + (stimulusSound == null ? "not set" : "set") + ", not playing sound for " + gameObject.name + ".");
-
-        // Reset this stimulus.
-        if (resetAfterTrigger) 
+        if (hasAudioSource && hasStimulusSound)
         {
-            float delay = resetAfterAnimationEnds ? GetAnimationLength() : manualResetDelay;
-            Invoke(nameof(this.ResetStimulus), delay);
+            audioSource.PlayOneShot(stimulusSound);
+            Debug.Log("Audio triggered successfully for " + gameObject.name + " Stimulus.");
         }
+        else
+            Debug.LogWarning("Audio Source " + (hasAudioSource ? "not set" : "set") + ", Stimulus Sound " + (hasStimulusSound ? "not set" : "set") + ", not playing sound for " + gameObject.name + ".");      
     }
 
+    // Preconditions: hasAnimator == true
     private float GetAnimationLength()
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
@@ -80,19 +103,25 @@ public class Stimulus : MonoBehaviour
     }
 
     // Reset the animator's parameter and the local flag.
-    public void ResetStimulus()
+    public void ResetAnimation()
     {
-        // If designated to do so, reset this Stimulus and its animator once the animator is no longer in transition and  following the specified delay.
+        if (!hasAnimator)
+        {
+            Debug.LogError("ResetAnimation called for Stimulus " + gameObject.name + " without an assigned Animator. Please assign it in the inspector.");
+            return;
+        }
+
+        // If designated to do so, reset this Stimulus and its animator once the animator is no longer in transition and following the specified delay.
         if (!resetAfterTrigger) return;
 
         if (animator.IsInTransition(0))
         {
-            Invoke(nameof(this.ResetStimulus), 0.05f);
+            Invoke(nameof(this.ResetAnimation), 0.05f);
             return;
         }
 
         bool state = animator.GetBool(animationTriggerParameterName);
         animator.SetBool(animationTriggerParameterName, !state);
-        Debug.Log(gameObject.name + " Stimulus has been reset");
+        Debug.Log(gameObject.name + " Stimulus animation has been reset");
     }
 }
