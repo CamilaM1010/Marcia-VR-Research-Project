@@ -14,7 +14,7 @@ public class StimuliCollector : MonoBehaviour
     private void StopSequences()
     {
         foreach (StimulusSequence s in sequences)
-            s.StopAllCoroutines();
+            s.StopSequence();
     }
 
     public void StopAllSound()
