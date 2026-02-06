@@ -468,7 +468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_text
-      value: STOP ALL ANIMATIONS
+      value: STOP ALL ANIMATIONS (WIP)
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_fontSize
@@ -549,6 +549,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 1433361556649339459, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_TagString
+      value: StimulusText
+      objectReference: {fileID: 0}
     - target: {fileID: 1654150097695419336, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
       propertyPath: m_text
       value: Click Button or "[key to press]"
@@ -560,6 +564,10 @@ PrefabInstance:
     - target: {fileID: 1654150097695419336, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
       propertyPath: m_margin.y
       value: 68.00805
+      objectReference: {fileID: 0}
+    - target: {fileID: 1654150097695419336, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1937922857008890348, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
       propertyPath: m_Color.b
@@ -609,6 +617,14 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 4165029063169833694}
+    - target: {fileID: 4897476874129383612, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_PixelPerfect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4897476874129383612, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_UpdateRectTransformForStandalone
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6397796645648018258, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
       propertyPath: m_Navigation.m_Mode
       value: 0
@@ -653,6 +669,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -100
       objectReference: {fileID: 0}
+    - target: {fileID: 8009560511494629474, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_TagString
+      value: StimulusTitle
+      objectReference: {fileID: 0}
     - target: {fileID: 8057534835663944661, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
       propertyPath: m_fontSize
       value: 32.85
@@ -660,6 +680,10 @@ PrefabInstance:
     - target: {fileID: 8057534835663944661, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
       propertyPath: m_margin.w
       value: -21.482323
+      objectReference: {fileID: 0}
+    - target: {fileID: 8057534835663944661, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 8199691757839124098, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1491,11 +1515,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_text
-      value: STOP ALL SOUNDS
+      value: STOP ALL SOUNDS (WIP)
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_fontSize
-      value: 20.15
+      value: 18.85
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_margin.w
