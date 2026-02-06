@@ -3923,6 +3923,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Student XR Rig
       objectReference: {fileID: 0}
+    - target: {fileID: 6149347757093234021, guid: 94698312453da84458b7ffd5c75c9a23, type: 3}
+      propertyPath: m_TargetDisplay
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6149347757093234021, guid: 94698312453da84458b7ffd5c75c9a23, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 151
+      objectReference: {fileID: 0}
     - target: {fileID: 8279585505659838567, guid: 94698312453da84458b7ffd5c75c9a23, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.994
@@ -24132,6 +24140,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2621280268839286190, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621280268839286190, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_ScreenMatchMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621280268839286190, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621280268839286190, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 2621280268839286190, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
+      objectReference: {fileID: 0}
     - target: {fileID: 3941699273382373076, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.27
@@ -24172,10 +24200,54 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5354257317147966206, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 2023993763}
+    - target: {fileID: 5230766075891007376, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5868467165564694800, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5868467165564694800, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_PixelPerfect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5868467165564694800, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_UpdateRectTransformForStandalone
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155242042281023278, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155242042281023278, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155242042281023278, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155242042281023278, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155242042281023278, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155242042281023278, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155242042281023278, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155242042281023278, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8733956305582838259, guid: b139cd020a63bea4b86eb1aac14b67ab, type: 3}
       propertyPath: m_Name
       value: Control Panel
