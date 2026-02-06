@@ -468,7 +468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_text
-      value: STOP ALL ANIMATIONS
+      value: STOP ALL ANIMATIONS (WIP)
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_fontSize
@@ -1515,11 +1515,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_text
-      value: STOP ALL SOUNDS
+      value: STOP ALL SOUNDS (WIP)
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_fontSize
-      value: 20.15
+      value: 18.85
       objectReference: {fileID: 0}
     - target: {fileID: 9191170149290644785, guid: 2b8184982143e30439d84ebd70998a3e, type: 3}
       propertyPath: m_margin.w

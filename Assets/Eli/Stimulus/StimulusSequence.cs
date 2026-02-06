@@ -46,6 +46,13 @@ public class StimulusSequence : MonoBehaviour
     private bool isShowingProgress = false;
     private Coroutine progressCoroutine = null;
 
+    [Header("Debug")]
+    [SerializeField] private bool printDebugStatements = false;
+
+    private void LogDebug(string s)
+    {
+        if (printDebugStatements) Debug.Log(s);
+    }
 
     void Start()
     {
@@ -91,7 +98,7 @@ public class StimulusSequence : MonoBehaviour
     // Called when this sequence is triggered by an input action from a Stimulus Action Trigger.
     public void OnTriggerStimulusSequence(InputAction.CallbackContext context)
     {
-        Debug.Log($"Stimulus Sequence triggered for {gameObject.name} by Input Action {context.action.name}");
+        LogDebug($"Stimulus Sequence triggered for {gameObject.name} by Input Action {context.action.name}");
         TriggerStimulusSequence();
     }
 
@@ -165,8 +172,20 @@ public class StimulusSequence : MonoBehaviour
             }
         }
         
+        // Reset original button state.
+        ResetButton();
+    }
+
+    private void ResetButton()
+    {
         useActionText.text = "Use Action";
         tmpActionText.text = defaultActionString;
         isShowingProgress = false;
+    }
+
+    public void StopSequence()
+    {
+        StopAllCoroutines();
+        ResetButton();
     }
 }

@@ -60,11 +60,19 @@ public class Stimulus : MonoBehaviour
     private bool isShowingProgress = false;
     private Coroutine progressCoroutine = null;
 
+    [Header("Debug")]
+    [SerializeField] private bool printDebugStatements = false;
+
 
     // Used to track the presence of the Animator, the Audio Source, and the Stimulus Sound.
     private bool hasAnimator;
     private bool hasAudioSource;
     private bool hasStimulusSound;
+
+    private void LogDebug(string s)
+    {
+        if (printDebugStatements) Debug.Log(s);
+    }
 
     void Start()
     {
@@ -129,7 +137,7 @@ public class Stimulus : MonoBehaviour
     // Input Action-based callback for triggering this Stimulus.
     public void OnTriggerStimulus(InputAction.CallbackContext context)
     {
-        Debug.Log($"Stimulus triggered for {gameObject.name} by Input Action {context.action.name}");
+        LogDebug($"Stimulus triggered for {gameObject.name} by Input Action {context.action.name}");
         TriggerStimulus();
     }
 
@@ -147,14 +155,14 @@ public class Stimulus : MonoBehaviour
             // Trigger the Stimulus and log its state to the console.
             state = !state;
             animator.SetBool(animationTriggerParameterName, state);
-            Debug.Log($"Animation triggered successfully for {gameObject.name} Stimulus.");
+            LogDebug($"Animation triggered successfully for {gameObject.name} Stimulus.");
         }
 
         // If the AudioSource and Sound are specified, play the sound. Otherwise, log their state to the console and don't play the sound.
         if (hasAudioSource && hasStimulusSound)
         {
             audioSource.PlayOneShot(stimulusSound);
-            Debug.Log($"Audio triggered successfully for {gameObject.name} Stimulus.");
+            LogDebug($"Audio triggered successfully for {gameObject.name} Stimulus.");
         }
         else
             Debug.LogWarning($"Audio Source {(hasAudioSource ? "not set" : "set")}, Stimulus Sound {(hasStimulusSound ? "not set" : "set")}, not playing sound for {gameObject.name}.");      
@@ -208,9 +216,14 @@ public class Stimulus : MonoBehaviour
             tmpActionText.text = $"{percentage:F0}%";
             yield return null;
         }
-        useActionText.text = "Use Action";
 
-        // Restore original text
+        // Restore original button state
+        ResetButton();
+    }
+
+    private void ResetButton()
+    {
+        useActionText.text = "Use Action";
         tmpActionText.text = defaultActionString;
         isShowingProgress = false;
     }
@@ -235,18 +248,25 @@ public class Stimulus : MonoBehaviour
 
         bool state = animator.GetBool(animationTriggerParameterName);
         animator.SetBool(animationTriggerParameterName, !state);
-        Debug.Log($"{gameObject.name} Stimulus animation has been reset");
+        LogDebug($"{gameObject.name} Stimulus animation has been reset");
     }
 
     public void StopSound()
     {
-        if (hasAudioSource && audioSource.isPlaying) audioSource.Stop();
+        if (hasAudioSource && audioSource.isPlaying) 
+        {
+            StopAllCoroutines();
+            ResetButton();
+            audioSource.Stop();
+        }
     }
 
     public void StopAnimation()
     {
         if (!hasAnimator || !animator.IsInTransition(0)) return;
         
+        StopAllCoroutines();
+        ResetButton();
         bool state = animator.GetBool(animationTriggerParameterName);
         animator.SetBool(animationTriggerParameterName, !state);
     }

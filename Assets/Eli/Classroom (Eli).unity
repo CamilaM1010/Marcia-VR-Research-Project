@@ -6524,6 +6524,7 @@ MonoBehaviour:
   button: {fileID: 1498442510}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  printDebugStatements: 0
 --- !u!82 &551362582
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7773,6 +7774,7 @@ MonoBehaviour:
   button: {fileID: 2028285383}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  printDebugStatements: 0
 --- !u!82 &656187951
 AudioSource:
   m_ObjectHideFlags: 0
@@ -16531,6 +16533,7 @@ MonoBehaviour:
   button: {fileID: 1922844710}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  printDebugStatements: 0
 --- !u!1001 &1463799722
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18589,6 +18592,7 @@ MonoBehaviour:
   button: {fileID: 2008696201}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  printDebugStatements: 0
 --- !u!82 &1607118035
 AudioSource:
   m_ObjectHideFlags: 0
@@ -21539,6 +21543,7 @@ MonoBehaviour:
   button: {fileID: 1216358951}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  printDebugStatements: 0
 --- !u!82 &1875440142
 AudioSource:
   m_ObjectHideFlags: 0
