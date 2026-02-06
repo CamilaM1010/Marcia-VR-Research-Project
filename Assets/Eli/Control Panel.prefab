@@ -593,6 +593,18 @@ PrefabInstance:
       propertyPath: m_enableAutoSizing
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3956137445091517442, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3956137445091517442, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 3956137445091517442, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
+      objectReference: {fileID: 0}
     - target: {fileID: 4897476874129383612, guid: 0c9d02d061bd4af44a7b2ccc3b333569, type: 3}
       propertyPath: m_Camera
       value: 
