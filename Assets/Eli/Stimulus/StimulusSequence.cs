@@ -1,9 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class StimulusSequence : MonoBehaviour
 {
+    // Stores the name of the Stimulus trigger function so it is not used directly.
+    private const string stimulusTriggerFunctionName = "TriggerStimulus";
+
     [System.Serializable]
     public class Step
     {
@@ -32,17 +36,17 @@ public class StimulusSequence : MonoBehaviour
     // Called to trigger this sequence of stimuli.
     public void TriggerStimulusSequence()
     {
-        // Trigger the step's stimulus after its pre-trigger delay and proceed to the next step after the current's post-trigger delay.
-        foreach (var step in stimuli) 
-        {
-            step.stimulus.Invoke("TriggerStimulus", step.preTriggerDelay);
-            
-            Invoke(nameof(HoldUp), step.postTriggerDelay);
-        }
+        StartCoroutine(ExecuteSequence());
     }
 
-    private void HoldUp()
+    // Execute each trigger sequentially with the proper delays.
+    private IEnumerator ExecuteSequence()
     {
-        return;
+        foreach (Step step in stimuli)
+        {
+            yield return new WaitForSeconds(step.preTriggerDelay);
+            step.stimulus.TriggerStimulus();
+            yield return new WaitForSeconds(step.postTriggerDelay);
+        }
     }
 }
