@@ -22,3 +22,7 @@ A "Stimulus Sequence" is a component that, when triggered, will trigger the Stim
 3. Set the step's Stimulus reference to the first Stimulus you wish to be triggered, as well as the delay (in seconds) to occur before and after the trigger.
 4. Repeat steps 2 and 3 for each stimulus you wish to play in sequence.
 5. To make the Stimulus Sequence triggered by a specific input, such as a keystroke or XR Controller A-button, add the "Stimulus Action Trigger" component to the GameObject and assign the appropriate Input Action Reference for the keystroke or controller input. Now, the Stimulus Sequence can be triggered the same as before OR with the selected Input Action.
+
+
+STIMULICOLLECTOR:
+The "Stimuli Collector" is used exclusively by the Control Panel prefab. All it does is provide an interface to stop any currently-playing Stimulus animations, sounds, or both. This also applies to Stimulus Sequences, which will be stopped mid-sequence.

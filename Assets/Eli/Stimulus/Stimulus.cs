@@ -42,7 +42,7 @@ public class Stimulus : MonoBehaviour
 
         if (!hasAnimator && !hasAudioSource) 
         {
-            Debug.LogWarning("No animator or audio source attached to Stimulus on " + gameObject.name + ". Please assign in the inspector.");
+            Debug.LogWarning("No animator or audio source attached to Stimulus on " + gameObject.name + ". Stimulus cannot be triggered until an animator or audio source and audio clip are assigned in the inspector.");
             enabled = false;
             return;
         }
@@ -51,7 +51,7 @@ public class Stimulus : MonoBehaviour
             idleState = animator.GetBool(animationTriggerParameterName);
 
         if (hasAudioSource && !hasStimulusSound)
-            Debug.LogWarning("Audio Source assigned to Stimulus on " + gameObject.name + " without assigned Stimulus sound. Please assign it in the inspector.");
+            Debug.LogWarning("Audio Source assigned to Stimulus on " + gameObject.name + " without assigned Stimulus sound. Sound will not be played unless assigned in the inspector.");
     }
 
     // Input Action-based callback for triggering this Stimulus.
@@ -123,5 +123,18 @@ public class Stimulus : MonoBehaviour
         bool state = animator.GetBool(animationTriggerParameterName);
         animator.SetBool(animationTriggerParameterName, !state);
         Debug.Log(gameObject.name + " Stimulus animation has been reset");
+    }
+
+    public void StopSound()
+    {
+        if (hasAudioSource && audioSource.isPlaying) audioSource.Stop();
+    }
+
+    public void StopAnimation()
+    {
+        if (!hasAnimator || !animator.IsInTransition(0)) return;
+        
+        bool state = animator.GetBool(animationTriggerParameterName);
+        animator.SetBool(animationTriggerParameterName, !state);
     }
 }
