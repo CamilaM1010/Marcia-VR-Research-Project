@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class StimulusActionTrigger : MonoBehaviour
 {
     [Tooltip("The Unity Input Action used to trigger the stimulus.")]
-    [SerializeField] private InputActionReference toggleAction;
+    [SerializeField] public InputActionReference toggleAction;
 
     // If this is being used on a stimulus, the sequence flag is false. Otherwise, attempt to use a sequence. If a sequence is found, the sequence flag is true.
     private Stimulus stimulus;

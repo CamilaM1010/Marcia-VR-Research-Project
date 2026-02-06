@@ -1,21 +1,17 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class Stimulus : MonoBehaviour
 {
+    [Header("Animation")]
     [Tooltip("The animator used to play the Stimulus' animation. The Stimulus assumes the animator will be in the idle, untriggered state when the scene is run.")]
     [SerializeField] private Animator animator;
 
     [Tooltip("The name of the animation parameter used to trigger the animation.")]
     [SerializeField] private string animationTriggerParameterName = "";
-
-
-    [Tooltip("The audio source used to play an audio clip when the stimulus is triggered.")]
-    [SerializeField] private AudioSource audioSource;
-
-    [Tooltip("The sound played when the simulus is triggered.")]
-    [SerializeField] private AudioClip stimulusSound;
 
     [Tooltip("If enabled, return this Stimulus' animator to its original state. Only disable this flag if the animator resets itself or the Stimulus' ResetTrigger() is called elsewhere.")]
     [SerializeField] private bool resetAfterTrigger = true;
@@ -25,6 +21,33 @@ public class Stimulus : MonoBehaviour
 
     [Tooltip("The wait time in seconds after triggering the stimulus before resetting. ")]
     [SerializeField] [Range(0.0f, 120.0f)] private float manualAnimationResetDelay = 0.0f;
+    
+    
+    [Header("Audio")]
+    [Tooltip("The audio source used to play an audio clip when the stimulus is triggered.")]
+    [SerializeField] private AudioSource audioSource;
+
+    [Tooltip("The sound played when the simulus is triggered.")]
+    [SerializeField] private AudioClip stimulusSound;
+
+    [Header("UI Integration")]
+    [Tooltip("The UI Button that displays the information about this stimulus.")]
+    [SerializeField] private Button button;
+
+    [Tooltip("The GameObject tag corresponding to the TextMeshPro component containing the title of the Stimulus.")]
+    [SerializeField] private string titleTag = "StimulusTitle";
+    
+    [Tooltip("The GameObject tag corresponding to the TextMeshPro component containing the Input Action used to trigger this stimulus, if one is present.")]
+    [SerializeField] private string inputTextTag = "StimulusText";
+    // The stimulus action trigger used to get the string name of the action.
+    private StimulusActionTrigger stimulusActionTrigger;
+    // The TMP Text component containing the title on its button.
+    private TMP_Text tmpTitleText;
+    // The TMP Text component containing the action to use to trigger the Stimulus.
+    private TMP_Text tmpActionText;
+    // The default action string used to show how to trigger the Stimulus.
+    private string defaultActionString = "";
+
 
     // The default state of the animator. Assumes the animator's default state is idle.
     private bool idleState;
@@ -36,6 +59,7 @@ public class Stimulus : MonoBehaviour
 
     void Start()
     {
+        // Animation and audio verification.
         hasAnimator = animator != null;
         hasAudioSource = audioSource != null;
         hasStimulusSound = stimulusSound != null;
@@ -52,6 +76,38 @@ public class Stimulus : MonoBehaviour
 
         if (hasAudioSource && !hasStimulusSound)
             Debug.LogWarning("Audio Source assigned to Stimulus on " + gameObject.name + " without assigned Stimulus sound. Sound will not be played unless assigned in the inspector.");
+
+        // Get the TextMeshPro component references for assigning their values.
+        if (button == null) return;
+        button.onClick.AddListener(this.TriggerStimulus);
+        stimulusActionTrigger = GetComponent<StimulusActionTrigger>();
+
+        TMP_Text[] texts = button.GetComponentsInChildren<TMP_Text>();
+        foreach (var t in texts)
+        {
+            if (t.CompareTag(titleTag)) tmpTitleText = t;
+            else if (t.CompareTag(inputTextTag)) tmpActionText = t;
+        }
+
+        // Assign the title text and the text for the key to be pressed.
+        if (tmpTitleText == null) Debug.LogWarning("Button has been assigned to Stimulus on " + name + ", but it contains no TextMeshPro Text components in children tagged with " + titleTag + ". Please ensure " + button.name + " has a child GameObject tagged with " + titleTag + " and containing a TextMeshPro Text component.");
+        else tmpTitleText.text = gameObject.name;
+
+        if (tmpActionText == null) 
+            Debug.LogWarning("Button has been assigned to Stimulus on " + name + ", but it contains no TextMeshPro Text components in children tagged with " + inputTextTag + ". Please ensure " + button.name + " has a child GameObject tagged with " + inputTextTag + " and containing a TextMeshPro Text component.");
+        else
+        {
+            if (stimulusActionTrigger != null)
+            {
+                defaultActionString = "Click OR \"" + stimulusActionTrigger.toggleAction.name + "\"";
+                tmpActionText.text = defaultActionString;
+            }
+            else
+            {
+                defaultActionString = "Click";
+                tmpActionText.text = defaultActionString;
+            }
+        }
     }
 
     // Input Action-based callback for triggering this Stimulus.
