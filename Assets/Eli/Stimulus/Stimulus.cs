@@ -31,7 +31,7 @@ public class Stimulus : MonoBehaviour
     [SerializeField] private AudioClip stimulusSound;
 
     [Header("UI Integration")]
-    [Tooltip("The UI Button that displays the information about this stimulus.")]
+    [Tooltip("The UI Button that displays the information about this Stimulus.")]
     [SerializeField] private Button button;
 
     [Tooltip("The GameObject tag corresponding to the TextMeshPro component containing the title of the Stimulus.")]
@@ -99,12 +99,12 @@ public class Stimulus : MonoBehaviour
         {
             if (stimulusActionTrigger != null)
             {
-                defaultActionString = "Click OR \"" + stimulusActionTrigger.toggleAction.name + "\"";
+                defaultActionString = "Click Button OR \"" + stimulusActionTrigger.toggleAction.name + "\"";
                 tmpActionText.text = defaultActionString;
             }
             else
             {
-                defaultActionString = "Click";
+                defaultActionString = "Click Button";
                 tmpActionText.text = defaultActionString;
             }
         }
