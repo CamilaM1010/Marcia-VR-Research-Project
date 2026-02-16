@@ -9,6 +9,7 @@
 
 - Steps to Commit:
     - Ensure your changes are complete and ready to be committed.
+    - Save all in the editor.
     - CLOSE THE EDITOR.
     - Fetch all, from your branch and dev.
     - Consistently check if pushes to dev have been made (switch to dev and fetch all). If so, **merge dev into your branch**
@@ -33,3 +34,4 @@
     - PUSH!!
  
 NOTIFY THE @MARCIA ROLE ON DISCORD WHEN YOU PUSH TO DEV.
+
