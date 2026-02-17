@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using TMPro;
+using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 public class StimulusLogger : MonoBehaviour
@@ -20,6 +22,8 @@ public class StimulusLogger : MonoBehaviour
     // The full file path where logs will be saved
     private string logFilePath;
 
+    [SerializeField] private TMP_Text logLocation_TMP_Text = null;
+
     void Awake()
     {
         // Singleton pattern - if this is the first logger, keep it; otherwise destroy duplicates
@@ -32,6 +36,10 @@ public class StimulusLogger : MonoBehaviour
 
             // Create a unique log file with timestamp (e.g., "stimulus_log_20260216_161319.txt")
             logFilePath = Path.Combine(Application.persistentDataPath, $"stimulus_log_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+
+            Debug.Log($"STIMULUS LOG FILE DESTINATION: {logFilePath}");
+
+            if (logLocation_TMP_Text != null) logLocation_TMP_Text.text = $"Log File Location: {logFilePath}";
             
             // Create the cancellation token (used to stop the background thread later)
             cancellationTokenSource = new CancellationTokenSource();
