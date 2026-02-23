@@ -20111,6 +20111,10 @@ PrefabInstance:
       propertyPath: button
       value: 
       objectReference: {fileID: 959797393}
+    - target: {fileID: 5248925030906835639, guid: 7ad0516ac8706b5418f140749da97e30, type: 3}
+      propertyPath: manualAnimationResetDelay
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5610520203518715704, guid: 7ad0516ac8706b5418f140749da97e30, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.83

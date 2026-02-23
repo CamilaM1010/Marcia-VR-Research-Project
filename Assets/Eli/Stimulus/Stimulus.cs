@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -61,6 +62,9 @@ public class Stimulus : MonoBehaviour
     private TMP_Text useActionText;
     // The default action string used to show how to trigger the Stimulus.
     private string defaultActionString = "";
+
+    // Used to track whether the stimulus is currently in progress.
+    private bool isStimulusPlaying = false;
     
     // Track if we're currently showing trigger completion progress.
     private bool isShowingProgress = false;
@@ -158,8 +162,12 @@ public class Stimulus : MonoBehaviour
     // Trigger the Stimulus and set the animator's trigger parameter to triggered. Only call if the animation has been reset.
     public void TriggerStimulus(string triggerSource = "Manual/Button")
     {
+        if (isStimulusPlaying) return;
+        
         // Log the trigger event
         if (logActivity) StimulusLogger.Log(STIMULUS_START_TEXT, gameObject.name, triggerSource);
+        isStimulusPlaying = true;
+        Invoke(nameof(StimulusNotPlaying), GetStimulusDuration());
 
         if (hasAnimator)
         {
@@ -206,6 +214,11 @@ public class Stimulus : MonoBehaviour
                 StopCoroutine(progressCoroutine);
             progressCoroutine = StartCoroutine(UpdateProgressText());
         }
+    }
+
+    private void StimulusNotPlaying()
+    {
+        isShowingProgress = false;
     }
 
     // Preconditions: hasAnimator == true
