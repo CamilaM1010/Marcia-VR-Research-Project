@@ -9,6 +9,14 @@ using UnityEngine.UI;
 [System.Serializable]
 public class Stimulus : MonoBehaviour
 {
+    // Define logging constants
+    private readonly static string STIMULUS_ACTION_TRIGGERED_TEXT = "STIMULUS_TRIGGERED_INPUTACTION";
+    private readonly static string STIMULUS_START_TEXT = "STIMULUS_START";
+    private readonly static string STIMULUS_ANIMATION_START_TEXT = "ANIMATION_START";
+    private readonly static string STIMULUS_AUDIO_START_TEXT = "AUDIO_START";
+    private readonly static string STIMULUS_AUDIO_STOP_TEXT = "AUDIO_STOP";
+    private readonly static string STIMULUS_ANIMATION_STOP_TEXT = "ANIMATION_STOP";
+
     [Header("Animation")]
     [Tooltip("The animator used to play the Stimulus' animation. The Stimulus assumes the animator will be in the idle, untriggered state when the scene is run.")]
     [SerializeField] private Animator animator = null;
@@ -60,6 +68,9 @@ public class Stimulus : MonoBehaviour
     private bool isShowingProgress = false;
     private Coroutine progressCoroutine = null;
 
+    [Header("Logging")]
+    [SerializeField] private bool logActivity = true;
+
     [Header("Debug")]
     [SerializeField] private bool printDebugStatements = false;
 
@@ -102,7 +113,7 @@ public class Stimulus : MonoBehaviour
     {
         // Get the TextMeshPro component references for assigning their values.
         if (button == null) return;
-        button.onClick.AddListener(this.TriggerStimulus);
+        button.onClick.AddListener(() => TriggerStimulus($"Button: {button.gameObject.name}"));
         stimulusActionTrigger = GetComponent<StimulusActionTrigger>();
 
         TMP_Text[] texts = button.GetComponentsInChildren<TMP_Text>();
@@ -137,13 +148,19 @@ public class Stimulus : MonoBehaviour
     // Input Action-based callback for triggering this Stimulus.
     public void OnTriggerStimulus(InputAction.CallbackContext context)
     {
+        string triggerSource = $"InputAction: {context.action.name}";
+        if (logActivity) StimulusLogger.Log(STIMULUS_ACTION_TRIGGERED_TEXT, gameObject.name, triggerSource);
+
         LogDebug($"Stimulus triggered for {gameObject.name} by Input Action {context.action.name}");
-        TriggerStimulus();
+        TriggerStimulus(triggerSource);
     }
 
     // Trigger the Stimulus and set the animator's trigger parameter to triggered. Only call if the animation has been reset.
-    public void TriggerStimulus()
+    public void TriggerStimulus(string triggerSource = "Manual/Button")
     {
+        // Log the trigger event
+        if (logActivity) StimulusLogger.Log(STIMULUS_START_TEXT, gameObject.name, triggerSource);
+
         if (hasAnimator)
         {
             bool state = animator.GetBool(animationTriggerParameterName);
@@ -155,6 +172,11 @@ public class Stimulus : MonoBehaviour
             // Trigger the Stimulus and log its state to the console.
             state = !state;
             animator.SetBool(animationTriggerParameterName, state);
+
+            // Log animation start
+            if (logActivity) StimulusLogger.Log(STIMULUS_ANIMATION_START_TEXT, gameObject.name, triggerSource,
+                $"Parameter: {animationTriggerParameterName}");
+
             LogDebug($"Animation triggered successfully for {gameObject.name} Stimulus.");
         }
 
@@ -162,6 +184,11 @@ public class Stimulus : MonoBehaviour
         if (hasAudioSource && hasStimulusSound)
         {
             audioSource.PlayOneShot(stimulusSound);
+
+            // Log audio start
+            if (logActivity) StimulusLogger.Log(STIMULUS_AUDIO_START_TEXT, gameObject.name, triggerSource,
+                $"Clip: {stimulusSound.name}, Duration: {stimulusSound.length}s");
+
             LogDebug($"Audio triggered successfully for {gameObject.name} Stimulus.");
         }
         else
@@ -248,6 +275,11 @@ public class Stimulus : MonoBehaviour
 
         bool state = animator.GetBool(animationTriggerParameterName);
         animator.SetBool(animationTriggerParameterName, !state);
+
+        // Log animation stop
+        if (logActivity) StimulusLogger.Log(STIMULUS_ANIMATION_STOP_TEXT, gameObject.name, "Auto-Reset",
+            $"Parameter: {animationTriggerParameterName}");
+
         LogDebug($"{gameObject.name} Stimulus animation has been reset");
     }
 
@@ -258,6 +290,9 @@ public class Stimulus : MonoBehaviour
             StopAllCoroutines();
             ResetButton();
             audioSource.Stop();
+
+            // Log audio stop
+            if (logActivity) StimulusLogger.Log(STIMULUS_AUDIO_STOP_TEXT, gameObject.name, "Manual Stop");
         }
     }
 
@@ -269,5 +304,8 @@ public class Stimulus : MonoBehaviour
         ResetButton();
         bool state = animator.GetBool(animationTriggerParameterName);
         animator.SetBool(animationTriggerParameterName, !state);
+
+        // Log animation stop
+        if (logActivity) StimulusLogger.Log(STIMULUS_ANIMATION_STOP_TEXT, gameObject.name, "Manual Stop");
     }
 }

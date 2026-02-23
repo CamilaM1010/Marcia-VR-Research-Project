@@ -2,13 +2,24 @@ using UnityEngine;
 
 public class StimuliCollector : MonoBehaviour
 {
+    // Singleton instance - ensures only one collector exists in the scene.
+    private static StimuliCollector _instance;
     [SerializeField] private Stimulus[] stimuli;
     [SerializeField] private StimulusSequence[] sequences;
+
+    void Awake()
+    {
+        if (_instance == null)
+            _instance = this;
+        else
+            // If a collector already exists, destroy this duplicate
+            Destroy(this.gameObject);
+    }
 
     void Start()
     {
         stimuli = FindObjectsByType<Stimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);        
     }
 
     private void StopSequences()
