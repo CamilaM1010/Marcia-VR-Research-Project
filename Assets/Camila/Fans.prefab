@@ -199,6 +199,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 17e68a2668f216048819f4c9ea884c96, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2668394234881834749}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 17e68a2668f216048819f4c9ea884c96, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2776576510319782369}
   m_SourcePrefab: {fileID: 100100000, guid: 17e68a2668f216048819f4c9ea884c96, type: 3}
 --- !u!1 &4014693406481091200 stripped
 GameObject:
@@ -227,6 +230,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2776576510319782369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4014693406481091200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cafa20573893b7d4abfed6d986650493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 2668394234881834749}
+  animationTriggerParameterName: isOn
+  resetAfterTrigger: 1
+  resetAfterAnimationEnds: 1
+  manualAnimationResetDelay: 0
+  audioSource: {fileID: 0}
+  stimulusSound: {fileID: 0}
+  button: {fileID: 0}
+  titleTag: StimulusTitle
+  inputTextTag: StimulusText
+  printDebugStatements: 0
 --- !u!4 &4394632310567784506 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 17e68a2668f216048819f4c9ea884c96, type: 3}
