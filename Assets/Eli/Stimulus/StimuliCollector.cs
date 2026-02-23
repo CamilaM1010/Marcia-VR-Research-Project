@@ -19,11 +19,12 @@ public class StimuliCollector : MonoBehaviour
     void Start()
     {
         stimuli = FindObjectsByType<Stimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);        
+        sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);
     }
 
     private void StopSequences()
     {
+        if (sequences == null) return;
         foreach (StimulusSequence s in sequences)
             s.StopSequence();
     }
@@ -41,14 +42,15 @@ public class StimuliCollector : MonoBehaviour
     {
         StopSequences();
         foreach (Stimulus s in stimuli)
-            s.StopAnimation();
+            if (s.isActiveAndEnabled) s.StopAnimation();
 
         Debug.Log("All stimuli have ceased animation and been reset.");
     }
 
     public void StopAllStimuli()
     {
-        StopAllSound();
-        StopAllAnimations();
+        StopSequences();
+        foreach (Stimulus s in stimuli)
+            if (s.isActiveAndEnabled) s.StopEverything();
     }
 }

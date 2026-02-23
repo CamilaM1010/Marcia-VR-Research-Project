@@ -136,7 +136,7 @@ public class StimulusSequence : MonoBehaviour
     // Update the text on the UI Button, if it exists, to show the progress of this sequence's completion.
     private IEnumerator UpdateSequenceProgressText()
     {
-        if (tmpActionText == null) yield break;
+        if (tmpActionText == null || button == null) yield break;
 
         useActionText.text = "Progress:";
         isShowingProgress = true;
@@ -178,9 +178,12 @@ public class StimulusSequence : MonoBehaviour
 
     private void ResetButton()
     {
-        useActionText.text = "Use Action";
-        tmpActionText.text = defaultActionString;
-        isShowingProgress = false;
+        if (button != null)
+        {
+            useActionText.text = "Use Action";
+            tmpActionText.text = defaultActionString;
+            isShowingProgress = false;
+        }
     }
 
     public void StopSequence()
