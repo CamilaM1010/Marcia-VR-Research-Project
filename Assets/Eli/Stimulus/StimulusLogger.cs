@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEditor.MemoryProfiler;
 using UnityEngine;
+using System.Diagnostics;
 
 public class StimulusLogger : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class StimulusLogger : MonoBehaviour
             // Create a unique log file with timestamp (e.g., "stimulus_log_20260216_161319.txt")
             logFilePath = Path.Combine(Application.persistentDataPath, $"stimulus_log_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
 
-            Debug.Log($"STIMULUS LOG FILE DESTINATION: {logFilePath}");
+            UnityEngine.Debug.Log($"STIMULUS LOG FILE DESTINATION: {logFilePath}");
 
             if (logLocation_TMP_Text != null) logLocation_TMP_Text.text = $"Log File Location: {logFilePath}";
             
@@ -109,5 +110,14 @@ public class StimulusLogger : MonoBehaviour
     {
         // Signal background thread to stop
         cancellationTokenSource?.Cancel();
+    }
+
+    void OnApplicationQuit()
+    {
+        // Ensure backslashes for Windows paths
+        string windowsPath = logFilePath.Replace("/", "\\");
+        
+        // Open windows explorer to log file location and highlight the file. "/select" highlights the file
+        Process.Start("explorer.exe", $"/select,\"{windowsPath}\"");
     }
 }

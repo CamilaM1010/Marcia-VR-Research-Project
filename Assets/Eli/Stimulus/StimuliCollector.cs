@@ -7,18 +7,19 @@ public class StimuliCollector : MonoBehaviour
     [SerializeField] private Stimulus[] stimuli;
     [SerializeField] private StimulusSequence[] sequences;
 
+    void Awake()
+    {
+        if (_instance == null)
+            _instance = this;
+        else
+            // If a collector already exists, destroy this duplicate
+            Destroy(this.gameObject);
+    }
 
     void Start()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-            stimuli = FindObjectsByType<Stimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);        
-        }
-        else
-            // If a collector already exist, destroy this duplicate
-            Destroy(gameObject);
+        stimuli = FindObjectsByType<Stimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);        
     }
 
     private void StopSequences()
