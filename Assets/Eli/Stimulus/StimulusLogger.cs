@@ -25,6 +25,8 @@ public class StimulusLogger : MonoBehaviour
 
     [SerializeField] private TMP_Text logLocation_TMP_Text = null;
 
+    [SerializeField] private bool OpenExplorerOnApplicationExit = true;
+
     void Awake()
     {
         // Singleton pattern - if this is the first logger, keep it; otherwise destroy duplicates
@@ -114,6 +116,8 @@ public class StimulusLogger : MonoBehaviour
 
     void OnApplicationQuit()
     {
+        if (!OpenExplorerOnApplicationExit) return;
+        
         // Ensure backslashes for Windows paths
         string windowsPath = logFilePath.Replace("/", "\\");
         
