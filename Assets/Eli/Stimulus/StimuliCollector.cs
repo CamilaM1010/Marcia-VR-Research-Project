@@ -7,22 +7,24 @@ public class StimuliCollector : MonoBehaviour
     [SerializeField] private Stimulus[] stimuli;
     [SerializeField] private StimulusSequence[] sequences;
 
+    void Awake()
+    {
+        if (_instance == null)
+            _instance = this;
+        else
+            // If a collector already exists, destroy this duplicate
+            Destroy(this.gameObject);
+    }
 
     void Start()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-            stimuli = FindObjectsByType<Stimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);        
-        }
-        else
-            // If a collector already exist, destroy this duplicate
-            Destroy(gameObject);
+        stimuli = FindObjectsByType<Stimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);
     }
 
     private void StopSequences()
     {
+        if (sequences == null) return;
         foreach (StimulusSequence s in sequences)
             s.StopSequence();
     }
@@ -40,14 +42,15 @@ public class StimuliCollector : MonoBehaviour
     {
         StopSequences();
         foreach (Stimulus s in stimuli)
-            s.StopAnimation();
+            if (s.isActiveAndEnabled) s.StopAnimation();
 
         Debug.Log("All stimuli have ceased animation and been reset.");
     }
 
     public void StopAllStimuli()
     {
-        StopAllSound();
-        StopAllAnimations();
+        StopSequences();
+        foreach (Stimulus s in stimuli)
+            if (s.isActiveAndEnabled) s.StopEverything();
     }
 }
