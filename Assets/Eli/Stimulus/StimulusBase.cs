@@ -92,17 +92,25 @@ public abstract class StimulusBase : MonoBehaviour
         ShowProgress();
         float duration = GetStimulusDuration();
         float elapsed = 0f;
+        int lastDisplayedPercentage = -1;
 
         useActionText.text = "Progress:";
+
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            float percentage = Mathf.Clamp01(elapsed / duration) * 100f;
-            tmpActionText.text = $"{percentage:F0}%";
+            int percentage = Mathf.Clamp(Mathf.FloorToInt((elapsed / duration) * 100f), 0, 100);
+
+            if (percentage != lastDisplayedPercentage)
+            {
+                tmpActionText.text = $"{percentage:F0}%";
+                lastDisplayedPercentage = percentage;                
+            }
             yield return null;
         }
 
         // Restore original button state
+        tmpActionText.text = "100%";
         ResetButton();
     }
 
