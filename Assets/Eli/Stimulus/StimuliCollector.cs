@@ -4,7 +4,8 @@ public class StimuliCollector : MonoBehaviour
 {
     // Singleton instance - ensures only one collector exists in the scene.
     private static StimuliCollector _instance;
-    [SerializeField] private Stimulus[] stimuli;
+    [SerializeField] private AnimationStimulus[] animationStimuli;
+    [SerializeField] private AudioStimulus[] audioStimuli;
     [SerializeField] private StimulusSequence[] sequences;
 
     void Awake()
@@ -18,7 +19,8 @@ public class StimuliCollector : MonoBehaviour
 
     void Start()
     {
-        stimuli = FindObjectsByType<Stimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        animationStimuli = FindObjectsByType<AnimationStimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        audioStimuli = FindObjectsByType<AudioStimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);
     }
 
@@ -32,8 +34,8 @@ public class StimuliCollector : MonoBehaviour
     public void StopAllSound()
     {
         StopSequences();
-        foreach (Stimulus s in stimuli)
-            if (s.isActiveAndEnabled) s.StopSound();
+        foreach (AudioStimulus s in audioStimuli)
+            if (s.isActiveAndEnabled) s.StopStimulus();
 
         Debug.Log("All stimuli have ceased playing sound.");
     }
@@ -41,8 +43,8 @@ public class StimuliCollector : MonoBehaviour
     public void StopAllAnimations()
     {
         StopSequences();
-        foreach (Stimulus s in stimuli)
-            if (s.isActiveAndEnabled) s.StopAnimation();
+        foreach (AnimationStimulus s in animationStimuli)
+            if (s.isActiveAndEnabled) s.StopStimulus();
 
         Debug.Log("All stimuli have ceased animation and been reset.");
     }
@@ -50,7 +52,9 @@ public class StimuliCollector : MonoBehaviour
     public void StopAllStimuli()
     {
         StopSequences();
-        foreach (Stimulus s in stimuli)
-            if (s.isActiveAndEnabled) s.StopEverything();
+        foreach (AnimationStimulus s in animationStimuli)
+            if (s.isActiveAndEnabled) s.StopStimulus();
+        foreach (AudioStimulus s in audioStimuli)
+            if (s.isActiveAndEnabled) s.StopStimulus();
     }
 }

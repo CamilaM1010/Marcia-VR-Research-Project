@@ -1,182 +1,212 @@
-# Stimulus System
+# Stimulus System — Handoff Documentation (v2)
 
 ---
 
 ## What Is This System?
 
-This is a small, self-contained Unity system for triggering **animations and/or sounds** in response to user input or in-game events. It's designed to be set up mostly through the Inspector, with minimal coding required after initial setup.
+This is a self-contained Unity system for triggering **animations and sounds** in response to user input or in-game events. It's designed to be configured almost entirely through the Inspector, with no coding required after initial setup.
 
-There are four components you'll work with:
+There are five components you'll work with:
 
 | Component | What It Does |
 |---|---|
-| `Stimulus` | Plays an animation and/or sound when triggered |
-| `StimulusSequence` | Triggers a list of Stimuli one after another |
-| `StimulusActionTrigger` | Lets a Stimulus or StimulusSequence respond to an Input Action (keypress, controller button, etc.) |
-| `StimuliCollector` | Used by the Control Panel prefab to stop all active Stimuli/Sequences at once |
+| `StimulusBase` | Abstract base class. Never added to a GameObject directly — shared logic lives here |
+| `AnimationStimulus` | Triggers an animation by flipping a Bool parameter on an Animator |
+| `AudioStimulus` | Plays a one-shot audio clip through an AudioSource |
+| `StimulusSequence` | Triggers a list of Stimuli one at a time, in order |
+| `StimulusActionTrigger` | Connects a Stimulus or StimulusSequence to a Unity Input Action |
+| `StimuliCollector` | Stops all active Stimuli and/or Sequences at once — used by the Control Panel |
+| `StimulusLogger` | Writes timestamped event logs to a file in the background |
 
-> **Important mental model:** A `Stimulus` is the basic unit — one animation, one sound, one trigger. A `StimulusSequence` is just an ordered list of Stimuli with optional pauses between them. Everything else is plumbing to connect those to inputs or UI.
+> **Core mental model:** `AnimationStimulus` and `AudioStimulus` are the basic units — one does animation, one does audio, and they're intentionally separate so you can stop all audio independently from all animation. A `StimulusSequence` chains any mix of them together in order. Everything else is plumbing.
 
 ---
 
-## The Stimulus Component
+## AnimationStimulus [1]
 
-### What It Actually Does
+### What It Does
 
-When triggered, a `Stimulus`:
-1. Sets a **Boolean parameter** on an Animator to its opposite value (idle → triggered)
-2. Plays a **one-shot audio clip** on an AudioSource
-3. After the animation or audio finishes (whichever is longer), resets itself so it can be triggered again
+When triggered, `AnimationStimulus`:
+1. Reads the current value of a named **Bool parameter** on an Animator
+2. Flips it to the opposite value to trigger the animation
+3. After the animation finishes (or after a manual delay), flips it back to reset
+4. Locks itself during playback so it can't be triggered twice simultaneously
 
-**The system cannot be triggered again while it's already playing.** This is intentional — `isStimulusPlaying` blocks re-triggering until the duration has elapsed.
+### The Bool Parameter Requirement
 
-### Prerequisites — Read Before Setting Up
+This is the most important thing to understand before setting one up. Your Animator Controller **must use a Bool parameter** to drive the animation you want to trigger — not a Trigger, not an int. The component reads and writes the parameter by name using `GetBool`/`SetBool` [1].
 
-The animation side of this system has one strict requirement: **your Animator Controller must use a single Boolean parameter to drive the animation you want to trigger.** Not a Trigger, not an int — a Bool. The Stimulus flips it from its idle state to the opposite when triggered, and flips it back when resetting.
+The component captures the **idle state of that Bool when the scene starts** [1]. It assumes whatever state the Animator is in at runtime startup is the untriggered baseline, and it toggles away from that on trigger and back to it on reset.
 
-> **Why a Bool and not a Trigger?** The code reads and writes the parameter by name using `GetBool`/`SetBool`. It captures the idle state on `Start()`, then toggles to the opposite on trigger and back on reset. Triggers behave differently in the Animator state machine and won't work here.
-
-Make sure the Animator is in its **idle/untriggered state when the scene starts.** The system captures that state as the baseline on `Start()` — if it's already in the triggered state, everything will be inverted.
+> **This means:** if your Animator is already in the triggered state when Play is pressed, the logic will be inverted — triggering will reset it and resetting will trigger it. Always make sure the scene starts with the Animator in its idle state.
 
 ### Inspector Fields
 
 **Animation**
 
-- **Animator** — The Animator component for the GameObject you want to animate. Can be on a different GameObject.
-- **Animation Trigger Parameter Name** — The exact name (case-sensitive) of the Bool parameter in your Animator Controller.
-- **Reset After Trigger** — Keep this ON unless you are manually calling `ResetStimulus()` elsewhere or your Animator resets itself. If this is off, the Stimulus will never reset automatically and cannot be re-triggered.
-- **Reset After Animation Ends** — When ON (default), the system waits for the animation clip to finish before resetting. When OFF, it waits for **Manual Animation Reset Delay** instead. Note: **Reset After Trigger must still be ON** for any automatic reset to happen.
-- **Manual Animation Reset Delay** — Only relevant when "Reset After Animation Ends" is OFF. A 0–120 second delay before the Animator resets.
-
-**Audio**
-
-- **Audio Source** — An AudioSource component (can be on any GameObject).
-- **Stimulus Sound** — The audio clip to play. If you assign an AudioSource but no clip, you'll get a warning and no sound will play. Both must be assigned for audio to work.
-
-**UI Integration** *(Only needed if using the Stimulus Button prefab)*
-
-- **Button** — A reference to the UI Button that controls this Stimulus. If assigned, the button's text will automatically show the GameObject's name and the current trigger method.
-- **Title Tag / Input Text Tag** — Tags used to find the correct TextMeshPro children of the button. Leave these as default (`StimulusTitle` / `StimulusText`) unless you have a custom button setup.
+- **Animator** — The Animator to control. Can be on a different GameObject.
+- **Animation Trigger Parameter Name** — The exact name (case-sensitive) of the Bool parameter in the Animator Controller.
+- **Reset After Trigger** — When ON, the system automatically resets the Animator after the animation plays. Turn this OFF only if your Animator resets itself, or if you're calling `ResetAnimation()` manually from elsewhere. If this is OFF, the Stimulus cannot be re-triggered automatically.
+- **Reset After Animation Ends** — When ON (default), resets after the animation clip's actual length. When OFF, waits for the **Manual Animation Reset Delay** instead. Note that **Reset After Trigger must also be ON** for any automatic reset to occur.
+- **Manual Animation Reset Delay** — A 0–120 second delay used only when "Reset After Animation Ends" is OFF.
 
 **Logging / Debug**
 
-- **Log Activity** — Logs trigger, animation start/stop, and audio start/stop events to a file via `StimulusLogger`.
-- **Print Debug Statements** — Logs more granular debug messages to the Unity Console. Useful during setup.
+- **Log Activity** — Logs trigger and animation start/stop events via `StimulusLogger`.
+- **Print Debug Statements** — Logs granular debug messages to the Unity Console. Useful during setup.
 
 ### How to Set One Up
 
-1. **Add the `Stimulus` component** to a GameObject in your scene.
-2. **Set up your Animator Controller** with a Bool parameter, ensure the animation state transitions on that Bool, and make sure the scene starts in the idle state.
-3. **Assign the Animator** in the Inspector and type the Bool parameter name exactly into "Animation Trigger Parameter Name."
-4. If you want sound, **assign an AudioSource and an AudioClip.**
-5. If you want a UI button, assign one (using the Stimulus Button prefab) and make sure the button's child TextMeshPro objects are tagged correctly.
-6. To trigger via a UI button or UnityEvent elsewhere, wire up **`TriggerStimulus()`** as the callback.
-7. To trigger via a keystroke or controller button, add a **`StimulusActionTrigger`** component (see below).
-
-### Triggering It
-
-There are two ways:
-
-- **UnityEvent / Button:** In the Inspector on a Button's `OnClick`, or any UnityEvent, call `TriggerStimulus()` on the Stimulus component.
-- **Input Action:** Add a `StimulusActionTrigger` to the same GameObject (details below).
+1. Add `AnimationStimulus` to a GameObject in your scene.
+2. In your Animator Controller, create a **Bool parameter** and set up a transition that fires when it changes. Make sure the scene starts in the idle/untriggered state.
+3. Assign the **Animator** in the Inspector and type the Bool parameter name exactly into **Animation Trigger Parameter Name**.
+4. Adjust the reset settings as needed (defaults are fine for most cases).
+5. To trigger it, wire `TriggerStimulus()` to a Button's OnClick, or add a `StimulusActionTrigger` (see below).
 
 ---
 
-## The StimulusSequence Component
+## AudioStimulus [2]
 
 ### What It Does
 
-`StimulusSequence` triggers a list of `Stimulus` components **one at a time, in order.** For each step, it:
+When triggered, `AudioStimulus`:
+1. Calls `PlayOneShot` on an AudioSource with a specified AudioClip
+2. Locks itself for the duration of the clip
+3. Resets automatically once the clip finishes
+
+Both an AudioSource **and** an AudioClip must be assigned — one without the other will produce a warning and the component will disable itself [2].
+
+### Inspector Fields
+
+- **Audio Source** — The AudioSource component to play through. Can be on any GameObject.
+- **Audio Clip** — The clip to play when triggered.
+- **Log Activity** — Logs audio start/stop events via `StimulusLogger`.
+- **Print Debug Statements** — Logs debug messages to the Unity Console.
+
+### How to Set One Up
+
+1. Add `AudioStimulus` to a GameObject.
+2. Assign an **AudioSource** (on any GameObject) and an **AudioClip**.
+3. Wire `TriggerStimulus()` to a Button's OnClick or add a `StimulusActionTrigger`.
+
+---
+
+## UI Button Integration (Both Stimulus Types)
+
+Both `AnimationStimulus` and `AudioStimulus` inherit UI button integration from `StimulusBase` [5]. If you assign a UI Button in the Inspector, the system will:
+
+- Automatically set the button's title text to the GameObject's name
+- Display the assigned Input Action name (if a `StimulusActionTrigger` is present) or "Click Button" if not
+- Show a live progress percentage while the Stimulus is playing
+- Reset the button text when playback finishes
+
+For this to work, the Button's child GameObjects must have TextMeshPro components tagged correctly:
+
+- One child tagged **`StimulusTitle`** — displays the Stimulus name
+- One child tagged **`StimulusText`** — displays the trigger method and progress
+- One additional TMP child (any tag) — displays the "Use Action" / "Progress:" label
+
+These tag names can be changed in the Inspector via **Title Tag** and **Input Text Tag** if you have a custom button setup. The defaults will work with the provided Stimulus Button prefab.
+
+---
+
+## StimulusSequence [7]
+
+### What It Does
+
+`StimulusSequence` triggers a list of Stimuli **one at a time, in order**. For each step it:
 1. Triggers the Stimulus
-2. Waits for that Stimulus's full duration (animation or audio, whichever is longer)
-3. Waits an additional optional delay (the step's **Delay After**)
+2. Waits for that Stimulus's full duration
+3. Waits an additional optional **Delay After**
 4. Moves to the next step
 
-> **Note:** The StimulusSequence does not check whether a Stimulus finished cleanly — it just waits for the calculated duration. Make sure your animation/audio lengths are accurate.
+The sequence works with any mix of `AnimationStimulus` and `AudioStimulus` steps.
 
 ### How to Set One Up
 
-1. Make sure all the individual `Stimulus` components you want to sequence are already set up and working on their own GameObjects.
-2. **Create a new empty GameObject** and add the `StimulusSequence` component to it.
-3. Click the **+** button in the Steps list to add a step.
-4. Assign a **Stimulus** reference and a **Delay After** value (in seconds, 0–120) for each step.
-5. Repeat for each Stimulus in the order you want them to fire.
-6. Trigger it the same way as a Stimulus — via UnityEvent calling `TriggerStimulusSequence()`, or via a `StimulusActionTrigger`.
+1. Make sure all the individual Stimulus components you want to use are already set up and working on their own.
+2. Create a new empty GameObject and add `StimulusSequence` to it.
+3. In the **Steps** list, click **+** to add a step. Assign a **Stimulus** reference and a **Delay After** value (in seconds) for each step.
+4. Trigger it via a Button's OnClick calling `TriggerStimulusSequence()`, or via a `StimulusActionTrigger`.
 
-> The StimulusSequence has its own UI Button integration fields that work identically to Stimulus — it will display the sequence name and trigger method on the button.
+The StimulusSequence has the same UI button integration as the individual Stimulus types, and its button will show per-step and overall progress while running [7].
 
 ---
 
-## The StimulusActionTrigger Component
+## StimulusActionTrigger [4]
 
 ### What It Does
 
-This is a small connector component. It listens for a Unity **Input Action** (from the Input System) and calls `TriggerStimulus()` or `TriggerStimulusSequence()` when that action fires.
-
-It **must be on the same GameObject** as either a `Stimulus` or a `StimulusSequence`. On `Start()`, it checks which one is present and hooks into it automatically. If neither is found, it logs an error.
+`StimulusActionTrigger` listens for a Unity Input Action and calls `TriggerStimulus()` or `TriggerStimulusSequence()` when it fires. It **must be on the same GameObject** as either a Stimulus or a StimulusSequence — it checks for both automatically at startup and hooks into whichever it finds [4].
 
 ### How to Set It Up
 
 1. Add `StimulusActionTrigger` to the **same GameObject** as your Stimulus or StimulusSequence.
-2. Assign an **Input Action Reference** in the Inspector. This is a reference to an action defined in your Input Action Asset (e.g., a keyboard key, an XR controller button).
-3. That's it — the component wires itself up automatically on `Start()`.
+2. Assign an **Input Action Reference** in the Inspector — this is an action defined in your Input Action Asset (a keyboard key, controller button, etc.).
+3. That's it. The component wires itself up automatically.
 
-> You can use both a UnityEvent/button **and** a StimulusActionTrigger at the same time. They don't interfere with each other.
-
----
-
-## The StimuliCollector Component
-
-This component is used **exclusively by the Control Panel prefab.** You generally won't need to add or configure it yourself.
-
-On `Start()`, it finds every `Stimulus` and `StimulusSequence` in the scene automatically (including inactive ones). It exposes three public methods:
-
-- **`StopAllSound()`** — Stops all audio and halts any running sequences.
-- **`StopAllAnimations()`** — Resets all animators and halts any running sequences.
-- **`StopAllStimuli()`** — Stops everything on every Stimulus and halts sequences.
-
-It also enforces a **singleton pattern** — only one StimuliCollector will exist in the scene. If a second one appears (e.g., from scene loading), it destroys itself.
+You can use a Button **and** a `StimulusActionTrigger` at the same time — they don't interfere [4].
 
 ---
 
-## The StimulusLogger
+## StimuliCollector [3]
 
-This runs in the background automatically when a `StimulusLogger` component is present in the scene (again, typically placed on the Control Panel prefab). You don't need to interact with it directly.
+This component is used by the Control Panel prefab and finds all Stimuli and Sequences in the scene automatically on startup. You generally won't need to configure it yourself.
 
-It writes timestamped log entries to a `.txt` file in `Application.persistentDataPath` whenever Stimuli are triggered, play audio, or animate. On application quit, it opens Windows Explorer to the log file location automatically (this can be toggled off in the Inspector with **Open Explorer On Application Exit**).
+It exposes three methods, each of which also stops all running sequences:
 
-If you're not seeing logs, make sure a `StimulusLogger` component exists somewhere in the scene and that **Log Activity** is enabled on your Stimulus components.
+- **`StopAllSound()`** — Stops only `AudioStimulus` instances [3]
+- **`StopAllAnimations()`** — Stops only `AnimationStimulus` instances [3]
+- **`StopAllStimuli()`** — Stops everything [3]
+
+Because `AudioStimulus` and `AnimationStimulus` are separate types, these three operations are genuinely independent — stopping all audio will not interrupt any animations, and vice versa.
+
+Only one `StimuliCollector` can exist in a scene — if a second one appears, it destroys itself [3].
+
+---
+
+## StimulusLogger [6]
+
+`StimulusLogger` runs automatically in the background when present in the scene (placed on the Control Panel prefab). It writes timestamped log entries to a `.txt` file in `Application.persistentDataPath` on a background thread, so it won't affect performance [6].
+
+On application quit, it opens Windows Explorer to the log file location automatically. This can be toggled off via **Open Explorer On Application Exit** [6].
+
+To see logs from a Stimulus, make sure a `StimulusLogger` exists somewhere in the scene and **Log Activity** is enabled on the Stimulus component.
 
 ---
 
 ## Common Pitfalls
 
-**"My animation won't trigger / triggers inverted"**
-Check that the Animator is in its idle state when the scene starts. The system captures the idle Bool value at runtime on `Start()`. If it's already in the triggered state, the logic will be backwards.
+**"My animation triggers inverted / resets when I expect it to trigger"**
+The Animator was not in its idle state when the scene started. `AnimationStimulus` captures the idle Bool value at startup and uses it as the baseline. Start the scene with the Animator in its untriggered state [1].
 
-**"My Stimulus won't re-trigger"**
-The Stimulus is locked while playing. If it seems permanently locked, check that **Reset After Trigger** is enabled, or that your Animator isn't stuck in a transition. You can call `ResetStimulus()` manually to force a reset.
-
-**"I'm getting a warning about no Animator or AudioSource"**
-A Stimulus requires at least one of the two (Animator or AudioSource+Clip) to function. If neither is present, the component disables itself.
+**"My Stimulus won't re-trigger after the first time"**
+Check that **Reset After Trigger** is enabled, or that your Animator isn't stuck in a transition. You can call `ResetAnimation()` on an `AnimationStimulus` to force a manual reset.
 
 **"No sound is playing"**
-Both an AudioSource **and** an AudioClip must be assigned. One without the other won't work — check for the warning in the Console.
+Both an AudioSource **and** an AudioClip must be assigned to `AudioStimulus`. Check the Console for a warning — if either is missing the component disables itself at startup [2].
 
 **"My StimulusActionTrigger isn't doing anything"**
-Make sure it's on the **same GameObject** as the Stimulus or StimulusSequence, and that the Input Action Reference is assigned and the action is enabled at runtime.
+Make sure it's on the **same GameObject** as the Stimulus or StimulusSequence, and that the Input Action Reference is assigned in the Inspector [4].
+
+**"My UI button text isn't updating"**
+Check that the Button's child GameObjects are tagged correctly (`StimulusTitle` and `StimulusText`) and contain TMP Text components. Check the Console for warnings from `SetupButton()` [5].
+
+**"StopAllSound is also stopping my animations"**
+This would mean an older version of `StimuliCollector` is in the scene. The current version uses separate arrays for `AudioStimulus` and `AnimationStimulus` and only operates on the correct type per method [3].
 
 ---
 
-## Quick-Reference: Trigger Methods
+## Quick Reference
 
 | What you want | How to do it |
 |---|---|
-| Trigger via UI Button | Wire `TriggerStimulus()` to the Button's OnClick event |
+| Trigger via UI Button | Wire `TriggerStimulus()` to the Button's OnClick |
 | Trigger via code | Call `stimulus.TriggerStimulus()` directly |
-| Trigger via keypress/controller | Add `StimulusActionTrigger`, assign Input Action Reference |
-| Stop everything | Call `StopEverything()` on the Stimulus, or use StimuliCollector |
+| Trigger via keypress / controller | Add `StimulusActionTrigger`, assign Input Action Reference |
 | Trigger a sequence | Call `TriggerStimulusSequence()` on the StimulusSequence |
-| Stop a sequence mid-run | Call `StopSequence()` on the StimulusSequence, or use StimuliCollector |
-
----
+| Stop a single Stimulus | Call `StopStimulus()` on it directly |
+| Stop a sequence mid-run | Call `StopSequence()` on the StimulusSequence |
+| Stop all audio | Call `StopAllSound()` on the StimuliCollector |
+| Stop all animation | Call `StopAllAnimations()` on the StimuliCollector |
+| Stop everything | Call `StopAllStimuli()` on the StimuliCollector |

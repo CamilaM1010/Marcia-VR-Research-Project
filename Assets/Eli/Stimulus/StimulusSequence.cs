@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using TMPro;
 using UnityEngine.UI;
-using System.Runtime.InteropServices;
 
 public class StimulusSequence : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class StimulusSequence : MonoBehaviour
     public class Step
     {
         [Tooltip("The Stimulus to be triggered in this step.")]
-        public Stimulus stimulus = null;
+        public StimulusBase stimulus = null;
 
         [Tooltip("The delay time in seconds after triggering the stimulus in this step.")]
         [Range(0f, 120f)] public float delayAfter = 0f;
