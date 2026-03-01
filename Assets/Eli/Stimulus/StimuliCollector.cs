@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Singleton component for enabling the stopping of all AnimationStimulus playback, AudioStimulus playback, StimulusSequences, and all three.
+/// </summary>
 public class StimuliCollector : MonoBehaviour
 {
     // Singleton instance - ensures only one collector exists in the scene.
