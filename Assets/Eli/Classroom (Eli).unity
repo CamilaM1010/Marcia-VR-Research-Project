@@ -20170,60 +20170,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6737060894164960494, guid: 7ad0516ac8706b5418f140749da97e30, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1865617803}
-    - targetCorrespondingSourceObject: {fileID: 6737060894164960494, guid: 7ad0516ac8706b5418f140749da97e30, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1865617802}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7ad0516ac8706b5418f140749da97e30, type: 3}
---- !u!1 &1865617801 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6737060894164960494, guid: 7ad0516ac8706b5418f140749da97e30, type: 3}
-  m_PrefabInstance: {fileID: 1865617800}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1865617802
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1865617801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dafa1a0c94638c843b164e5dd030f092, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  button: {fileID: 0}
-  titleTag: StimulusTitle
-  inputTextTag: StimulusText
-  logActivity: 1
-  printDebugStatements: 0
-  animator: {fileID: 0}
-  animationTriggerParameterName: 
-  resetAfterTrigger: 1
-  resetAfterAnimationEnds: 1
-  manualAnimationResetDelay: 0
---- !u!114 &1865617803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1865617801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ab63057fe63b804cbbf235a2916cce7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  button: {fileID: 0}
-  titleTag: StimulusTitle
-  inputTextTag: StimulusText
-  logActivity: 1
-  printDebugStatements: 0
-  audioSource: {fileID: 0}
-  audioClip: {fileID: 0}
 --- !u!1001 &1873548025
 PrefabInstance:
   m_ObjectHideFlags: 0
