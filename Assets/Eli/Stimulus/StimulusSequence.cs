@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using TMPro;
 using UnityEngine.UI;
-using System.Runtime.InteropServices;
+using Unity.Android.Gradle;
 
 public class StimulusSequence : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class StimulusSequence : MonoBehaviour
     public class Step
     {
         [Tooltip("The Stimulus to be triggered in this step.")]
-        public Stimulus stimulus = null;
+        public StimulusBase stimulus = null;
 
         [Tooltip("The delay time in seconds after triggering the stimulus in this step.")]
         [Range(0f, 120f)] public float delayAfter = 0f;
@@ -136,10 +136,11 @@ public class StimulusSequence : MonoBehaviour
     // Update the text on the UI Button, if it exists, to show the progress of this sequence's completion.
     private IEnumerator UpdateSequenceProgressText()
     {
-        if (tmpActionText == null) yield break;
+        if (tmpActionText == null || button == null) yield break;
 
         useActionText.text = "Progress:";
         isShowingProgress = true;
+
         int totalSteps = stimuli.Count;
         int currentStep = 0;
 
@@ -149,6 +150,8 @@ public class StimulusSequence : MonoBehaviour
             totalSequenceDuration += step.stimulus.GetStimulusDuration() + step.delayAfter;
 
         float overallElapsed = 0f;
+        int lastDisplayedOverall = -1;
+        int lastDisplayedStep = -1;
 
         foreach (Step step in stimuli)
         {
@@ -156,7 +159,6 @@ public class StimulusSequence : MonoBehaviour
 
             // Calculate this step's total duration.
             float stepDuration = step.stimulus.GetStimulusDuration() + step.delayAfter;
-
             float stepElapsed = 0f;
 
             while (stepElapsed < stepDuration)
@@ -164,23 +166,32 @@ public class StimulusSequence : MonoBehaviour
                 stepElapsed += Time.deltaTime;
                 overallElapsed += Time.deltaTime;
 
-                float stepPercentage = Mathf.Clamp01(stepElapsed / stepDuration) * 100f;
-                float overallPercentage = Mathf.Clamp01(overallElapsed / totalSequenceDuration) * 100f;
+                int stepPercentage = Mathf.Clamp(Mathf.FloorToInt((stepElapsed / stepDuration) * 100f), 0, 100);
+                int overallPercentage = Mathf.Clamp(Mathf.FloorToInt((overallElapsed / totalSequenceDuration) * 100f), 0, 100);
 
-                tmpActionText.text = $"Step {currentStep}/{totalSteps} - {stepPercentage:F0}% | Total: {overallPercentage:F0}%";
+                if (stepPercentage != lastDisplayedStep || overallPercentage != lastDisplayedOverall)
+                {
+                    tmpActionText.text = $"Step {currentStep}/{totalSteps} - {stepPercentage:F0}% | Total: {overallPercentage:F0}%";
+                    lastDisplayedStep = stepPercentage;
+                    lastDisplayedOverall = overallPercentage;
+                }
                 yield return null;
             }
         }
         
         // Reset original button state.
+        tmpActionText.text = $"Step {totalSteps}/{totalSteps} - 100% | Total: 100%";
         ResetButton();
     }
 
     private void ResetButton()
     {
-        useActionText.text = "Use Action";
-        tmpActionText.text = defaultActionString;
-        isShowingProgress = false;
+        if (button != null)
+        {
+            useActionText.text = "Use Action";
+            tmpActionText.text = defaultActionString;
+            isShowingProgress = false;
+        }
     }
 
     public void StopSequence()

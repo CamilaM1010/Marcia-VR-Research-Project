@@ -1,10 +1,14 @@
 using UnityEngine;
 
+/// <summary>
+/// Singleton component for enabling the stopping of all AnimationStimulus playback, AudioStimulus playback, StimulusSequences, and all three.
+/// </summary>
 public class StimuliCollector : MonoBehaviour
 {
     // Singleton instance - ensures only one collector exists in the scene.
     private static StimuliCollector _instance;
-    [SerializeField] private Stimulus[] stimuli;
+    [SerializeField] private AnimationStimulus[] animationStimuli;
+    [SerializeField] private AudioStimulus[] audioStimuli;
     [SerializeField] private StimulusSequence[] sequences;
 
     void Awake()
@@ -18,12 +22,14 @@ public class StimuliCollector : MonoBehaviour
 
     void Start()
     {
-        stimuli = FindObjectsByType<Stimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);        
+        animationStimuli = FindObjectsByType<AnimationStimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        audioStimuli = FindObjectsByType<AudioStimulus>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        sequences = FindObjectsByType<StimulusSequence>(FindObjectsInactive.Include, FindObjectsSortMode.None);
     }
 
     private void StopSequences()
     {
+        if (sequences == null) return;
         foreach (StimulusSequence s in sequences)
             s.StopSequence();
     }
@@ -31,8 +37,8 @@ public class StimuliCollector : MonoBehaviour
     public void StopAllSound()
     {
         StopSequences();
-        foreach (Stimulus s in stimuli)
-            if (s.isActiveAndEnabled) s.StopSound();
+        foreach (AudioStimulus s in audioStimuli)
+            if (s.isActiveAndEnabled) s.StopStimulus();
 
         Debug.Log("All stimuli have ceased playing sound.");
     }
@@ -40,15 +46,18 @@ public class StimuliCollector : MonoBehaviour
     public void StopAllAnimations()
     {
         StopSequences();
-        foreach (Stimulus s in stimuli)
-            s.StopAnimation();
+        foreach (AnimationStimulus s in animationStimuli)
+            if (s.isActiveAndEnabled) s.StopStimulus();
 
         Debug.Log("All stimuli have ceased animation and been reset.");
     }
 
     public void StopAllStimuli()
     {
-        StopAllSound();
-        StopAllAnimations();
+        StopSequences();
+        foreach (AnimationStimulus s in animationStimuli)
+            if (s.isActiveAndEnabled) s.StopStimulus();
+        foreach (AudioStimulus s in audioStimuli)
+            if (s.isActiveAndEnabled) s.StopStimulus();
     }
 }

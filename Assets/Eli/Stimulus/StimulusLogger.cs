@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using System.Diagnostics;
 
@@ -24,6 +23,8 @@ public class StimulusLogger : MonoBehaviour
     private string logFilePath;
 
     [SerializeField] private TMP_Text logLocation_TMP_Text = null;
+
+    [SerializeField] private bool OpenExplorerOnApplicationExit = true;
 
     void Awake()
     {
@@ -114,6 +115,8 @@ public class StimulusLogger : MonoBehaviour
 
     void OnApplicationQuit()
     {
+        if (!OpenExplorerOnApplicationExit) return;
+        
         // Ensure backslashes for Windows paths
         string windowsPath = logFilePath.Replace("/", "\\");
         

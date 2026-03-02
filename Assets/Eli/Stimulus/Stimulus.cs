@@ -1,12 +1,10 @@
-using System;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-[System.Serializable]
+[System.Serializable, System.Obsolete("The Stimulus component is deprecated. Please use AnimationStimulus for animation-based stimuli and AudioStimulus for auditory stimuli.")]
 public class Stimulus : MonoBehaviour
 {
     // Define logging constants
@@ -31,7 +29,7 @@ public class Stimulus : MonoBehaviour
     [SerializeField] private bool resetAfterAnimationEnds = true;
 
     [Tooltip("The wait time in seconds after triggering the stimulus before resetting. ")]
-    [SerializeField] [Range(0.0f, 120.0f)] private float manualAnimationResetDelay = 0.0f;
+    [SerializeField] [UnityEngine.Range(0.0f, 120.0f)] private float manualAnimationResetDelay = 0.0f;
 
     // The default state of the animator. Assumes the animator's default state is idle.
     private bool idleState;
@@ -63,6 +61,9 @@ public class Stimulus : MonoBehaviour
     private TMP_Text useActionText;
     // The default action string used to show how to trigger the Stimulus.
     private string defaultActionString = "";
+
+    // Used to track whether the stimulus is currently in progress.
+    private bool isStimulusPlaying = false;
     
     // Track if we're currently showing trigger completion progress.
     private bool isShowingProgress = false;
@@ -104,6 +105,8 @@ public class Stimulus : MonoBehaviour
 
         if (hasAudioSource && !hasStimulusSound)
             Debug.LogWarning($"Audio Source assigned to Stimulus on {gameObject.name} without assigned Stimulus sound. Sound will not be played unless assigned in the inspector.");
+        else if (!hasAudioSource || !hasStimulusSound)
+             Debug.LogWarning($"Audio Source {(hasAudioSource ? "not set" : "set")}, Stimulus Sound {(hasStimulusSound ? "not set" : "set")}, not playing sound for {gameObject.name}.");
 
         SetupButton();
     }
@@ -158,8 +161,12 @@ public class Stimulus : MonoBehaviour
     // Trigger the Stimulus and set the animator's trigger parameter to triggered. Only call if the animation has been reset.
     public void TriggerStimulus(string triggerSource = "Manual/Button")
     {
+        if (isStimulusPlaying) return;
+        
         // Log the trigger event
         if (logActivity) StimulusLogger.Log(STIMULUS_START_TEXT, gameObject.name, triggerSource);
+        isStimulusPlaying = true;
+        Invoke(nameof(StimulusNotPlaying), GetStimulusDuration());
 
         if (hasAnimator)
         {
@@ -190,9 +197,7 @@ public class Stimulus : MonoBehaviour
                 $"Clip: {stimulusSound.name}, Duration: {stimulusSound.length}s");
 
             LogDebug($"Audio triggered successfully for {gameObject.name} Stimulus.");
-        }
-        else
-            Debug.LogWarning($"Audio Source {(hasAudioSource ? "not set" : "set")}, Stimulus Sound {(hasStimulusSound ? "not set" : "set")}, not playing sound for {gameObject.name}.");      
+        }  
 
         // Reset this stimulus.
         if (hasAnimator && resetAfterTrigger) 
@@ -208,6 +213,11 @@ public class Stimulus : MonoBehaviour
                 StopCoroutine(progressCoroutine);
             progressCoroutine = StartCoroutine(UpdateProgressText());
         }
+    }
+
+    private void StimulusNotPlaying()
+    {
+        isShowingProgress = false;
     }
 
     // Preconditions: hasAnimator == true
@@ -250,6 +260,7 @@ public class Stimulus : MonoBehaviour
 
     private void ResetButton()
     {
+        if (button == null) return;
         useActionText.text = "Use Action";
         tmpActionText.text = defaultActionString;
         isShowingProgress = false;
@@ -287,8 +298,8 @@ public class Stimulus : MonoBehaviour
     {
         if (hasAudioSource && audioSource.isPlaying) 
         {
-            StopAllCoroutines();
             ResetButton();
+            // StopAllCoroutines();
             audioSource.Stop();
 
             // Log audio stop
@@ -300,12 +311,20 @@ public class Stimulus : MonoBehaviour
     {
         if (!hasAnimator || !animator.IsInTransition(0)) return;
         
-        StopAllCoroutines();
+        // StopAllCoroutines();
         ResetButton();
         bool state = animator.GetBool(animationTriggerParameterName);
         animator.SetBool(animationTriggerParameterName, !state);
 
         // Log animation stop
         if (logActivity) StimulusLogger.Log(STIMULUS_ANIMATION_STOP_TEXT, gameObject.name, "Manual Stop");
+    }
+
+    public void StopEverything()
+    {
+        StopAllCoroutines();
+        ResetButton();
+        StopSound();
+        StopAnimation();
     }
 }
