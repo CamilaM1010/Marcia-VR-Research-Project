@@ -654,7 +654,7 @@ MonoBehaviour:
   m_Camera: {fileID: 6149347757093234021}
   m_OriginBaseGameObject: {fileID: 5716087867355297628}
   m_CameraFloorOffsetObject: {fileID: 3852955350007290071}
-  m_RequestedTrackingOriginMode: 0
+  m_RequestedTrackingOriginMode: 1
   m_CameraYOffset: 1.36144
 --- !u!143 &4014398118496931736
 CharacterController:
@@ -946,7 +946,7 @@ GameObject:
   - component: {fileID: 6149347757093234021}
   - component: {fileID: 3334648905331078069}
   - component: {fileID: 2282124766681725695}
-  - component: {fileID: 1402036248266615977}
+  - component: {fileID: 4944700701186782421}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1008,7 +1008,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 151
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 1
@@ -1129,7 +1129,7 @@ MonoBehaviour:
       m_Action: Rotation
       m_Flags: 0
     m_Flags: 0
---- !u!114 &1402036248266615977
+--- !u!114 &4944700701186782421
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
