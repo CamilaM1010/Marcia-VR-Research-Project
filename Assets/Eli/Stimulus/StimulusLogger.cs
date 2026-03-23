@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using System.Diagnostics;
 

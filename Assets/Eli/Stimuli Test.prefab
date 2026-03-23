@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2829548115282712963}
   - component: {fileID: 9051197899181133145}
-  - component: {fileID: 4011427849636323927}
+  - component: {fileID: 5631148109556492758}
   m_Layer: 0
   m_Name: fan noise
   m_TagString: Untagged
@@ -130,7 +130,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4011427849636323927
+--- !u!114 &5631148109556492758
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,20 +139,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 32217978418097025}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cafa20573893b7d4abfed6d986650493, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ab63057fe63b804cbbf235a2916cce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  animationTriggerParameterName: 
-  resetAfterTrigger: 1
-  resetAfterAnimationEnds: 1
-  manualAnimationResetDelay: 0
-  audioSource: {fileID: 9051197899181133145}
-  stimulusSound: {fileID: 8300000, guid: 6040cfd7f7d71c144a3aeba16734df24, type: 3}
   button: {fileID: 0}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  logActivity: 1
   printDebugStatements: 0
+  audioSource: {fileID: 9051197899181133145}
+  audioClip: {fileID: 8300000, guid: 6040cfd7f7d71c144a3aeba16734df24, type: 3}
 --- !u!1 &1091268277460580382
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,13 +194,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stimuli:
-  - stimulus: {fileID: 4618481061791467105}
+  - stimulus: {fileID: 607762842543390801}
     delayAfter: 0
-  - stimulus: {fileID: 4011427849636323927}
+  - stimulus: {fileID: 5631148109556492758}
     delayAfter: 0
-  - stimulus: {fileID: 4387443913020555281}
+  - stimulus: {fileID: 4129883367474551221}
     delayAfter: 0
-  - stimulus: {fileID: 5688309260297206318}
+  - stimulus: {fileID: 1887440384420338288}
     delayAfter: 0
   button: {fileID: 0}
   titleTag: StimulusTitle
@@ -220,7 +216,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6072833289398105462}
   - component: {fileID: 8291153198384010716}
-  - component: {fileID: 4387443913020555281}
+  - component: {fileID: 4129883367474551221}
   m_Layer: 0
   m_Name: door slam
   m_TagString: Untagged
@@ -340,7 +336,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4387443913020555281
+--- !u!114 &4129883367474551221
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -349,20 +345,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 3218293324547060403}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cafa20573893b7d4abfed6d986650493, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ab63057fe63b804cbbf235a2916cce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  animationTriggerParameterName: 
-  resetAfterTrigger: 1
-  resetAfterAnimationEnds: 1
-  manualAnimationResetDelay: 0
-  audioSource: {fileID: 8291153198384010716}
-  stimulusSound: {fileID: 8300000, guid: 817db71df4eb7da448641b4deb91bdf8, type: 3}
   button: {fileID: 0}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  logActivity: 1
   printDebugStatements: 0
+  audioSource: {fileID: 8291153198384010716}
+  audioClip: {fileID: 8300000, guid: 817db71df4eb7da448641b4deb91bdf8, type: 3}
 --- !u!1 &3280231408428172236
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,7 +400,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7521479571992671748}
   - component: {fileID: 9182683628394181813}
-  - component: {fileID: 5688309260297206318}
+  - component: {fileID: 1887440384420338288}
   m_Layer: 0
   m_Name: running crowd
   m_TagString: Untagged
@@ -528,7 +520,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5688309260297206318
+--- !u!114 &1887440384420338288
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -537,20 +529,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 3483191989154041931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cafa20573893b7d4abfed6d986650493, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ab63057fe63b804cbbf235a2916cce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  animationTriggerParameterName: 
-  resetAfterTrigger: 1
-  resetAfterAnimationEnds: 1
-  manualAnimationResetDelay: 0
-  audioSource: {fileID: 9182683628394181813}
-  stimulusSound: {fileID: 8300000, guid: 90b70e5c54e5b9542b0e43bf43613e1f, type: 3}
   button: {fileID: 0}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  logActivity: 1
   printDebugStatements: 0
+  audioSource: {fileID: 9182683628394181813}
+  audioClip: {fileID: 8300000, guid: 90b70e5c54e5b9542b0e43bf43613e1f, type: 3}
 --- !u!1 &3513401177696030902
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,7 +549,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2482684185538408636}
   - component: {fileID: 5207043395256376511}
-  - component: {fileID: 4618481061791467105}
+  - component: {fileID: 607762842543390801}
   m_Layer: 0
   m_Name: classroom chatter
   m_TagString: Untagged
@@ -681,7 +669,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4618481061791467105
+--- !u!114 &607762842543390801
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -690,20 +678,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 3513401177696030902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cafa20573893b7d4abfed6d986650493, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ab63057fe63b804cbbf235a2916cce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  animationTriggerParameterName: 
-  resetAfterTrigger: 1
-  resetAfterAnimationEnds: 1
-  manualAnimationResetDelay: 0
-  audioSource: {fileID: 5207043395256376511}
-  stimulusSound: {fileID: 8300000, guid: 11c90197e0cc0764ba4e587a1570c2e2, type: 3}
   button: {fileID: 0}
   titleTag: StimulusTitle
   inputTextTag: StimulusText
+  logActivity: 1
   printDebugStatements: 0
+  audioSource: {fileID: 5207043395256376511}
+  audioClip: {fileID: 8300000, guid: 11c90197e0cc0764ba4e587a1570c2e2, type: 3}
 --- !u!1 &5817846689826842597
 GameObject:
   m_ObjectHideFlags: 0

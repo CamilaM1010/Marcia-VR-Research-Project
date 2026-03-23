@@ -1,4 +1,3 @@
-using NUnit.Framework.Interfaces;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,7 +8,7 @@ public class StimulusActionTrigger : MonoBehaviour
     [SerializeField] public InputActionReference toggleAction;
 
     // If this is being used on a stimulus, the sequence flag is false. Otherwise, attempt to use a sequence. If a sequence is found, the sequence flag is true.
-    private Stimulus stimulus;
+    private StimulusBase stimulus;
     private bool useSeq = false;
     private StimulusSequence stimSeq;
 
@@ -27,7 +26,7 @@ public class StimulusActionTrigger : MonoBehaviour
         else if (gameObject.TryGetComponent(out stimSeq))
         {
             useSeq = true;
-            Debug.Log("Stimulus Sequence component found. Stimulus Action Trigger will use Input Action " + toggleAction.action.name + " to trigger Stimulus Sequence " + stimulus.gameObject.name + ".");
+            Debug.Log("Stimulus Sequence component found. Stimulus Action Trigger will use Input Action " + toggleAction.action.name + " to trigger Stimulus Sequence " + stimSeq.gameObject.name + ".");
         }
         else 
         {
