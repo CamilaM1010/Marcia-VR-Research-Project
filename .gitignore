@@ -186,3 +186,4 @@ InitTestScene*.unity*
 
 # macOS
 *.DS_Store
+*.slnx
