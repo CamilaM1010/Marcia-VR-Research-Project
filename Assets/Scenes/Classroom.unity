@@ -6097,6 +6097,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 8325465334426393354, guid: 01d20d16276856345a844ef5fd044e41, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8330181113026060388, guid: 01d20d16276856345a844ef5fd044e41, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -9284,6 +9288,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1849745229290481674, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2218496723442559053, guid: d6878e1999eb4b44a9f5a263af86c185, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.994
@@ -9398,7 +9406,9 @@ MonoBehaviour:
   instructionText: {fileID: 674477784}
   statusText: {fileID: 674477783}
   statusFlashTime: 1
-  objectToDestroy: {fileID: 674477782}
+  objectsToDestroy:
+  - {fileID: 674477782}
+  - {fileID: 751959288}
 --- !u!4 &689508267
 Transform:
   m_ObjectHideFlags: 0
@@ -10233,6 +10243,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4473655760522394, guid: 883fda0b73369fe41bc2ed262338a937, type: 3}
   m_PrefabInstance: {fileID: 747111436}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &751959288 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8325465334426393354, guid: 01d20d16276856345a844ef5fd044e41, type: 3}
+  m_PrefabInstance: {fileID: 318743023}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &780113436
 GameObject:

@@ -22,7 +22,7 @@ public class ThreePointRoomCalibration : MonoBehaviour
     public TMP_Text statusText;        // confrimations
     public float statusFlashTime = 1.0f;
 
-    public GameObject objectToDestroy; //destroy instruction room
+    public GameObject[] objectsToDestroy; //destroy objects
 
     private float statusUntil = 0f;
 
@@ -277,8 +277,12 @@ public class ThreePointRoomCalibration : MonoBehaviour
         float err2 = Vector3.Distance(marker2.position, R2);
         float err3 = Vector3.Distance(marker3.position, R3);
 
-        Debug.Log($"Calibration complete. Destroying {objectToDestroy.name}.");
-        Destroy(objectToDestroy);
+        Debug.Log("Calibration complete.");
+        foreach (var obj in objectsToDestroy)
+        {
+            Debug.Log($"Destroying {obj.name}.");
+            Destroy(obj);
+        }
     }
 
     void ResetMarkers()
