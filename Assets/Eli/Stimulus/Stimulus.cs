@@ -1,11 +1,10 @@
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-[System.Serializable]
+[System.Serializable, System.Obsolete("The Stimulus component is deprecated. It is no longer compatible with StimulusSequence, StimulusActionTrigger, or StimuliCollector. Please use AnimationStimulus for animation-based stimuli and AudioStimulus for auditory stimuli.")]
 public class Stimulus : MonoBehaviour
 {
     // Define logging constants

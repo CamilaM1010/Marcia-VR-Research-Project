@@ -1,16 +1,30 @@
-using NUnit.Framework.Interfaces;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
+/// <summary>
+/// A helper component that attaches to a StimulusBase or StimulusSequence and allows it to be triggered with a Unity InputAction.
+/// </summary>
 public class StimulusActionTrigger : MonoBehaviour
 {
+    /// <summary>
+    /// The Unity InputAction that will trigger the assigned StimulusBase or StimulusSequence.
+    /// </summary>
     [Tooltip("The Unity Input Action used to trigger the stimulus.")]
     [SerializeField] public InputActionReference toggleAction;
 
-    // If this is being used on a stimulus, the sequence flag is false. Otherwise, attempt to use a sequence. If a sequence is found, the sequence flag is true.
-    private Stimulus stimulus;
+    /// <summary>
+    /// If this StimulusActionTrigger is attached to a GameObject containing a StimulusBase, this field will be assigned that component.
+    /// </summary>
+    private StimulusBase stimulus;
+
+    /// <summary>
+    /// If this StimulusActionTrigger is attached to a GameObject containing a StimulusBase, this field is false, and if attached to a GameObject containing a StimulusSequence, this field is true.
+    /// </summary>
     private bool useSeq = false;
+
+    /// <summary>
+    /// If this StimulusActionTrigger is attached to a GameObject containing a StimulusSequence, this field will be assigned that component.
+    /// </summary>
     private StimulusSequence stimSeq;
 
     void Start()
@@ -27,7 +41,7 @@ public class StimulusActionTrigger : MonoBehaviour
         else if (gameObject.TryGetComponent(out stimSeq))
         {
             useSeq = true;
-            Debug.Log("Stimulus Sequence component found. Stimulus Action Trigger will use Input Action " + toggleAction.action.name + " to trigger Stimulus Sequence " + stimulus.gameObject.name + ".");
+            Debug.Log("Stimulus Sequence component found. Stimulus Action Trigger will use Input Action " + toggleAction.action.name + " to trigger Stimulus Sequence " + stimSeq.gameObject.name + ".");
         }
         else 
         {
@@ -39,6 +53,9 @@ public class StimulusActionTrigger : MonoBehaviour
         toggleAction.action.performed += useSeq ? stimSeq.OnTriggerStimulusSequence : stimulus.OnTriggerStimulus;
     }
 
+    /// <summary>
+    /// When this StimulusActionTrigger is destroyed, ensure it removes the callback function from the Input Action.
+    /// </summary>
     void OnDestroy()
     {
         if (toggleAction != null)
