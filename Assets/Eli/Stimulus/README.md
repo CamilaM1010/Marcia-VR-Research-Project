@@ -18,7 +18,7 @@ There are five components you'll work with:
 | `StimuliCollector` | Stops all active Stimuli and/or Sequences at once — used by the Control Panel |
 | `StimulusLogger` | Writes timestamped event logs to a file in the background |
 
-> **Core mental model:** `AnimationStimulus` and `AudioStimulus` are the basic units — one does animation, one does audio, and they're intentionally separate so you can stop all audio independently from all animation. A `StimulusSequence` chains any mix of them together in order. Everything else is plumbing.
+> **Core mental model:** `AnimationStimulus` and `AudioStimulus` are the basic units — one does animation, one does audio, and they're intentionally separate so you can stop all audio independently from all animation and vice versa. A `StimulusSequence` chains any mix of them together in order. Everything else is plumbing.
 
 ---
 
@@ -36,7 +36,7 @@ When triggered, `AnimationStimulus`:
 
 This is the most important thing to understand before setting one up. Your Animator Controller **must use a Bool parameter** to drive the animation you want to trigger — not a Trigger, not an int. The component reads and writes the parameter by name using `GetBool`/`SetBool` [1].
 
-The component captures the **idle state of that Bool when the scene starts** [1]. It assumes whatever state the Animator is in at runtime startup is the untriggered baseline, and it toggles away from that on trigger and back to it on reset.
+The component captures the **idle state of that Bool when the scene starts** [1]. It assumes whatever state the Animator is in at runtime startup is the **untriggered baseline**, and it toggles away from that on trigger and back to it on reset.
 
 > **This means:** if your Animator is already in the triggered state when Play is pressed, the logic will be inverted — triggering will reset it and resetting will trigger it. Always make sure the scene starts with the Animator in its idle state.
 
@@ -151,12 +151,12 @@ You can use a Button **and** a `StimulusActionTrigger` at the same time — they
 
 ## StimuliCollector [3]
 
-This component is used by the Control Panel prefab and finds all Stimuli and Sequences in the scene automatically on startup. You generally won't need to configure it yourself.
+This component is used by the Control Panel prefab and finds all Stimuli and Sequences in the scene automatically on startup. You generally won't need to configure it yourself. Note that it stops all `StimulusSequence` instances when stopping audio or animation, since the StimulusSequence cannot see whether its steps use audio or animation and therefore stopping either means cancelling any running `StimulusSequence` instances since they cannot be paused.
 
-It exposes three methods, each of which also stops all running sequences:
+It exposes three methods, *each of which also stops all running sequences*:
 
-- **`StopAllSound()`** — Stops only `AudioStimulus` instances [3]
-- **`StopAllAnimations()`** — Stops only `AnimationStimulus` instances [3]
+- **`StopAllSound()`** — Stops all `AudioStimulus` instances [3]
+- **`StopAllAnimations()`** — Stops all `AnimationStimulus` instances [3]
 - **`StopAllStimuli()`** — Stops everything [3]
 
 Because `AudioStimulus` and `AnimationStimulus` are separate types, these three operations are genuinely independent — stopping all audio will not interrupt any animations, and vice versa.
