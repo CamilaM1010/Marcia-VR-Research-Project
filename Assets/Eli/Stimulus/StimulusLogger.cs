@@ -4,27 +4,42 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using System.Diagnostics;
 
+/// <summary>
+/// Singleton component for allowing StimulusBase and StimulusSequence components to write logs. Technically any GameObject can write to these logs but StimulusLogger not restrict.
+/// </summary>
 public class StimulusLogger : MonoBehaviour
 {
-    // Singleton instance - ensures only one logger exists in the scene.
+    /// <summary>
+    /// The singleton instance is static, meaning it is a property of the class and not a StimulusLogger object, to ensure that only one StimulusLogger can exist in a scene.
+    /// </summary>
     private static StimulusLogger _instance;
 
-    // Thread-safe queue that stores log messages waiting to be written to file
-    // Multiple threads can add to this queue simultaneously without conflicts
+    /// <summary>
+    /// A thread-safe queue that stores log messages waiting to be written to the log file. Multiple threads of execution can add to this queue simultaneously without conflicts.
+    /// </summary>
     private ConcurrentQueue<string> logQueue = new();
 
-    // Used to signal the background trhead to stop when the simulation ends
+    /// <summary>
+    /// A little token guy that signals the background thread to stop running when the application ends. It basically tells the StimulusLogger to stop logging.
+    /// </summary>
     private CancellationTokenSource cancellationTokenSource;
 
-    // The full file path where logs will be saved
+    /// <summary>
+    /// Stores the full file path where logs will be stored. This location is calculated on Awake().
+    /// </summary>
     private string logFilePath;
 
+    /// <summary>
+    /// The TextMeshPro Text component used to display the logFilePath on the researcher's UI.
+    /// </summary>
     [SerializeField] private TMP_Text logLocation_TMP_Text = null;
 
+    /// <summary>
+    /// If true, will open Windows Explorer to the log file path and highlight the file when the Application (or play mode) ends. If false, the file will still be stored but Windows Explorer will not be opened.
+    /// </summary>
     [SerializeField] private bool OpenExplorerOnApplicationExit = true;
 
     void Awake()
@@ -58,7 +73,7 @@ public class StimulusLogger : MonoBehaviour
     }
 
     /// <summary>
-    /// Call this static method from anywhere to add a log entry.
+    /// Call this static method from anywhere in the project to add a log entry.
     /// It's thread-safe and can be called from any script.
     /// </summary>
     /// <param name="eventType">Type of event (e.g., "STIMULUS_START", "ANIMATION_START")</param>
@@ -80,7 +95,7 @@ public class StimulusLogger : MonoBehaviour
     /// This runs on a background thread and continuously checks for new log entries to write.
     /// It runs independently from Unity's main thread, so it won't cause frame drops.
     /// </summary>
-    /// <param name="token">Allows us to stop this thread when the game ends</param>
+    /// <param name="token">Allows us to stop this thread when the game ends.</param>
     private async Task ProcessLogQueue(CancellationToken token)
     {
         // Open the log file for writing
@@ -108,12 +123,18 @@ public class StimulusLogger : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// When this component is destroyed, signal the background thread handling logging to stop, if the CancellationToken exists.
+    /// </summary>
     void OnDestroy()
     {
         // Signal background thread to stop
         cancellationTokenSource?.Cancel();
     }
 
+    /// <summary>
+    /// When the application (or play mode) ends, open Windows Explorer to the newly generated log file and highlight it, if specified.
+    /// </summary>
     void OnApplicationQuit()
     {
         if (!OpenExplorerOnApplicationExit) return;
