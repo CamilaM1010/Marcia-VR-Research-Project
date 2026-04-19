@@ -13832,9 +13832,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4139321311260320090, guid: 4650c6912a9376e46928960f41e2e010, type: 3}
+      propertyPath: m_Height
+      value: 2.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4139321311260320090, guid: 4650c6912a9376e46928960f41e2e010, type: 3}
+      propertyPath: m_BaseOffset
+      value: 0.45
+      objectReference: {fileID: 0}
     - target: {fileID: 6539956381481272147, guid: 4650c6912a9376e46928960f41e2e010, type: 3}
       propertyPath: m_Name
       value: NPCs
+      objectReference: {fileID: 0}
+    - target: {fileID: 8366608206826681435, guid: 4650c6912a9376e46928960f41e2e010, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.027
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
