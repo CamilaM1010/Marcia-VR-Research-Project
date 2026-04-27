@@ -59,7 +59,7 @@ public class TeacherController : MonoBehaviour
         wasWalkingLastFrame = walkingNow;
 
         // Handle arrival
-        if (isMoving && !agent.pathPending)
+        if (isMoving && agent.isActiveAndEnabled && agent.isOnNavMesh && !agent.pathPending)
         {
             if (agent.remainingDistance <= agent.stoppingDistance)
             {
@@ -111,11 +111,17 @@ public class TeacherController : MonoBehaviour
             return;
         }
 
+        if (!agent.isActiveAndEnabled || !agent.isOnNavMesh)
+        {
+            Debug.LogWarning($"{gameObject.name} agent is not on NavMesh yet.");
+            animator.SetBool(walkingParam, false);
+            return;
+        }
+
         agent.enabled = true;
         agent.isStopped = false;
         agent.ResetPath();
         agent.SetDestination(teachingSpot.position);
-
         isMoving = true;
     }
 
