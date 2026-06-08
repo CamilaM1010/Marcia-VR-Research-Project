@@ -70,22 +70,44 @@ public class Exam : MonoBehaviour
 
     // This is the text that displays on the paper
     public TextMeshProUGUI paperText;
-    
 
+    // Keeps track of the question number we are in
+    public int QuestionNumber = 0;
+    
     // Testing for text on paper
     private void Start()
     {
-        questions = new Question[1];
-
-        questions[0] = new Question
+        if (questions.Length == 0)
         {
-            questionString = "How many fingers in a hand?",
-            answerAText = "2",
-            answerBText = "3",
-            answerCText = "4",
-            answerDText = "5",
-            correctAnswerText = "5"
-        };
+            questions = new Question[]{
+
+                new Question{
+                    questionString = "What did the elderly woman want when she held the man’s arm?",
+                    answerAText = "She was trying to avoid falling.",
+                    answerBText = "She wanted help crossing the street.",
+                    answerCText = "She wanted to go for a walk with him.",
+                    answerDText = "She mistook him for her son.",
+                    correctAnswerText = "She wanted help crossing the street."
+                },
+                new Question{
+                    questionString = "What decision did the man make after looking at his hand?",
+                    answerAText = "He wanted to play.",
+                    answerBText = "He decided to go to sleep.",
+                    answerCText = "He wanted to find someone he cared about.",
+                    answerDText = "He decided to help people.",
+                    correctAnswerText = "He decided to help people."
+                },
+                new Question{
+                    questionString = "Why did the man pretend to be blind?",
+                    answerAText = "He wanted the other man to help him.",
+                    answerBText = "He was hiding from another person.",
+                    answerCText = "He lost his ability to see.",
+                    answerDText = "He was conducting an experiment.",
+                    correctAnswerText = "He wanted the other man to help him."
+                }
+            };
+        }
+        
 
 
         // Build the full exam text (currently, will not all fit on paper, will need to either decrease font or make different pages).
