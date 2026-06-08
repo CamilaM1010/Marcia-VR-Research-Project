@@ -19603,6 +19603,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: fan noise BUTTON (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 607762842543390801, guid: 93be9ee2995c4f74ba8c4bba773feb52, type: 3}
+      propertyPath: button
+      value: 
+      objectReference: {fileID: 1902325475}
     - target: {fileID: 1091268277460580382, guid: 93be9ee2995c4f74ba8c4bba773feb52, type: 3}
       propertyPath: m_Name
       value: seq1 BUTTON
