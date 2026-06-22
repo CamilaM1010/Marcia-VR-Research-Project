@@ -6,38 +6,61 @@ public class DoorCloseTrigger : MonoBehaviour
     public GameObject doorA;          // the GameObject holding the Animator
     public GameObject doorB;          // the second door
 
-    [Header("Bool parameter that opens the door")]
-    public string boolParameterName = "Close";   // rename if your Animator uses a different name
-
-    // ------------------------------------------------------------------------
-
-    /// <summary>
-    /// Hook this into the button’s OnClick().  It turns the bool on
-    /// and tells each door to play its closing audio.
-    /// </summary>
+    private bool isOpen = true;
+    private bool triggered = false;
+    
     public void Trigger()
     {
-        SetBoolOnAnimator(doorA, true);
-        SetBoolOnAnimator(doorB, true);
+        Debug.Log("Trigger called");
 
-        PlayDoorAudio(doorA);
-        PlayDoorAudio(doorB);
-    }
-
-    // ------------------------------------------------------------------------
-
-    private void SetBoolOnAnimator(GameObject door, bool value)
-    {
-        if (door == null) return;
-
-        Animator anim = door.GetComponent<Animator>();
-        if (anim == null)
+        if (triggered)
         {
-            Debug.LogWarning($"No Animator found on {door.name}");
+            Debug.Log("Already triggered");
             return;
         }
 
-        anim.SetBool(boolParameterName, value);
+        if (isOpen)
+        {
+            Debug.Log("Before doorA");
+            SetBoolOnAnimator(doorA);
+
+            Debug.Log("After doorA");
+
+            SetBoolOnAnimator(doorB);
+
+            Debug.Log("After doorB");
+
+            PlayDoorAudio(doorA);
+            PlayDoorAudio(doorB);
+
+            isOpen = false;
+            triggered = true;
+        }
+    }
+
+    private void SetBoolOnAnimator(GameObject door)
+    {
+        if (door == null)
+        {
+            Debug.LogError("Door is NULL");
+            return;
+        }
+
+        Debug.Log($"Attempting to trigger door: {door.name}");
+
+        Animator anim = door.GetComponent<Animator>();
+
+        if (anim == null)
+        {
+            Debug.LogError($"No Animator found on {door.name}");
+            return;
+        }
+
+        Debug.Log($"Found Animator on {door.name}");
+
+        anim.SetTrigger("close");
+
+        Debug.Log($"Set trigger 'close' on {door.name}");
     }
 
     private void PlayDoorAudio(GameObject door)
