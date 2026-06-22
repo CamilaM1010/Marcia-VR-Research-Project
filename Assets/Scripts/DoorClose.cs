@@ -1,51 +1,58 @@
 using UnityEngine;
 
-public class DualDoorCloser : MonoBehaviour
+public class DoorCloseTrigger : MonoBehaviour
 {
-    // ---------- Left door ----------
-    public Animator leftDoorAnimator;   // must have a "CloseDoor" trigger
-    public AudioSource leftCloseSource; // already holds the closing clip
+    [Header("Doors to control")]
+    public GameObject doorA;          // the GameObject holding the Animator
+    public GameObject doorB;          // the second door
 
-    // ---------- Right door ----------
-    public Animator rightDoorAnimator;  // must have a "CloseDoor" trigger
-    public AudioSource rightCloseSource; // already holds the closing clip
+    [Header("Bool parameter that opens the door")]
+    public string boolParameterName = "Close";   // rename if your Animator uses a different name
 
-    // ---------- Shared outside noise ----------
-    public AudioSource outsideAmbient;  // plays background noise
-    [Range(0f,1f)] public float closedVolume = 0.3f; // volume while doors are closed
-    float originalAmbientVolume;
+    // ------------------------------------------------------------------------
 
-    // ---------- State ----------
-    bool doorsClosed = false;
-
-    void Awake()
+    /// <summary>
+    /// Hook this into the button’s OnClick().  It turns the bool on
+    /// and tells each door to play its closing audio.
+    /// </summary>
+    public void Trigger()
     {
-        if (outsideAmbient != null)
-            originalAmbientVolume = outsideAmbient.volume;
+        SetBoolOnAnimator(doorA, true);
+        SetBoolOnAnimator(doorB, true);
+
+        PlayDoorAudio(doorA);
+        PlayDoorAudio(doorB);
     }
 
-    // Call this to toggle both doors together
-    public void ToggleDoors()
+    // ------------------------------------------------------------------------
+
+    private void SetBoolOnAnimator(GameObject door, bool value)
     {
-        if (!doorsClosed)
-            CloseAll();
+        if (door == null) return;
+
+        Animator anim = door.GetComponent<Animator>();
+        if (anim == null)
+        {
+            Debug.LogWarning($"No Animator found on {door.name}");
+            return;
+        }
+
+        anim.SetBool(boolParameterName, value);
     }
 
-    void CloseAll()
+    private void PlayDoorAudio(GameObject door)
     {
-        // Left door
-        leftDoorAnimator?.SetTrigger("CloseDoor");
-        leftCloseSource?.Play();
+        if (door == null) return;
 
-        // Right door
-        rightDoorAnimator?.SetTrigger("CloseDoor");
-        rightCloseSource?.Play();
-
-        // Damp out ambient
-        if (outsideAmbient != null)
-            outsideAmbient.volume = closedVolume;
-
-        doorsClosed = true;
+        AudioSource audio = door.GetComponent<AudioSource>();
+        if (audio != null)
+        {
+            // `Play()` restarts the clip; use PlayOneShot() if you want to layer sounds
+            audio.Play();
+        }
+        else
+        {
+            Debug.LogWarning($"No AudioSource found on {door.name}");
+        }
     }
-
 }
