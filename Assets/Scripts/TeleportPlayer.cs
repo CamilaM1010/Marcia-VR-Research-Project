@@ -2,8 +2,24 @@ using UnityEngine;
 
 public class TeleportPlayer : MonoBehaviour
 {
-    public void SendToPosition(Transform t)
+    public Transform deskA;
+    public Transform deskB;
+
+    private bool isAtDeskA = true;
+
+    public void SendToPosition()
     {
-        gameObject.transform.position = t.position;
+
+        if (isAtDeskA)
+        {
+            transform.position = deskB.position;
+            isAtDeskA = false;
+        }
+        else
+        {
+            transform.position = deskA.position;
+            isAtDeskA = true;
+        }
+
     }
 }

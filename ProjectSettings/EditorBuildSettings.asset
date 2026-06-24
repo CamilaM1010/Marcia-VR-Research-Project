@@ -17,9 +17,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Victory.unity
     guid: fa12e6e20937d2a4ba8806ce2fe1aaad
-  - enabled: 1
+  - enabled: 0
     path: Assets/Eli/Classroom (Eli).unity
     guid: 4d6f5a6f7544050468bb197dac25f5bd
+  - enabled: 1
+    path: Assets/Nick/Classroom (Nick).unity
+    guid: 1dcc9a336427c094e823dbd0d8649ee2
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 1b2916a22dadfd24bacb7cb99487bea0, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7, type: 2}
