@@ -388,7 +388,7 @@ MonoBehaviour:
   m_TrackProperties:
     volume: 1
     stereoPan: 0
-    spatialBlend: 0
+    spatialBlend: 1
 --- !u!114 &-7962835349523346999
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -688,9 +688,32 @@ MonoBehaviour:
   m_Markers:
     m_Objects: []
   m_TrackProperties:
-    volume: 1
+    volume: 0.45
     stereoPan: 0
-    spatialBlend: 0
+    spatialBlend: 1
+--- !u!114 &-6938763253547293595
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a16748d9461eae46a725db9776d5390, type: 3}
+  m_Name: Markers
+  m_EditorClassIdentifier: 
+  m_Version: 3
+  m_AnimClip: {fileID: 0}
+  m_Locked: 0
+  m_Muted: 0
+  m_CustomPlayableFullTypename: 
+  m_Curves: {fileID: 0}
+  m_Parent: {fileID: 11400000}
+  m_Children: []
+  m_Clips: []
+  m_Markers:
+    m_Objects: []
 --- !u!114 &-6794901753403937534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -748,7 +771,7 @@ MonoBehaviour:
   m_Loop: 1
   m_bufferingTime: 0.1
   m_ClipProperties:
-    volume: 0.308
+    volume: 0.3
 --- !u!114 &-5919600877737641558
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3505,7 +3528,7 @@ MonoBehaviour:
   m_TrackProperties:
     volume: 1
     stereoPan: 0
-    spatialBlend: 0
+    spatialBlend: 1
 --- !u!114 &-353439172877055307
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3920,9 +3943,9 @@ MonoBehaviour:
   m_Markers:
     m_Objects: []
   m_TrackProperties:
-    volume: 1
+    volume: 0.8
     stereoPan: 0
-    spatialBlend: 0
+    spatialBlend: 1
 --- !u!114 &3362664965350576628
 MonoBehaviour:
   m_ObjectHideFlags: 1
