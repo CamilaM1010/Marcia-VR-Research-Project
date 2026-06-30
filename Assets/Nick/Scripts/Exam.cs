@@ -1,143 +1,219 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit;                 // SelectEnterEventArgs
+using UnityEngine.XR.Interaction.Toolkit.Interactables;   // XRSimpleInteractable
 using TMPro;
-
 
 public class Exam : MonoBehaviour
 {
-    // todo: finish up the question class, including looking at interactable and update
+    // ---------------- DATA (just text + the correct answer) ----------------
     [System.Serializable]
     public class Question
     {
-        // String for question text
-        public string questionString;
-
-        // Answer Options to click
-        public XRSimpleInteractable answerA;
-        public XRSimpleInteractable answerB;
-        public XRSimpleInteractable answerC;
-        public XRSimpleInteractable answerD;
-
-        // Text for answer choices
+        [TextArea] public string questionString;
         public string answerAText;
         public string answerBText;
         public string answerCText;
         public string answerDText;
 
-        public string correctAnswerText; // this is the text of the correct answer, used for grading
+        [Tooltip("0 = A, 1 = B, 2 = C, 3 = D")]
+        public int correctAnswerIndex;
 
-        private XRSimpleInteractable chosen; // update this when changing answer
-        private XRSimpleInteractable correctAnswer; // correct answer is same but changes for comparison in grading
-
-        public void Update()
-        {
-            //todo: when one interactable is "selected" make sure it stays that way, and "deselect" the other three 
-        }
-
-        // todo: Make UI for green checkmarks and red Xes, and make sure they show up only when grading the question
-        public void GradeQuestion()
-        {
-            if (chosen == correctAnswer)
-            {
-                // mark correct answer with green arrow
-                Debug.Log("Correct!");
-            }
-            else
-            {
-                // mark chosen answer with red x
-                Debug.Log("Incorrect!");
-
-            }
-        }
-
-        public string GetFormattedText(int questionNumber)
-        {
-            return
-                $"Q{questionNumber}: {questionString}\n" +
-                $"A. {answerAText}\n" +
-                $"B. {answerBText}\n" +
-                $"C. {answerCText}\n" +
-                $"D. {answerDText}";
-        }
-
-
+        [HideInInspector] public int selectedIndex = -1; // -1 means "not answered yet"
     }
 
-    // Set of questions we might want on the exam
+    // ---------------- INSPECTOR REFERENCES ----------------
+    [Header("Questions")]
     public Question[] questions;
 
-    // This is the text that displays on the paper
+    [Header("Answer Buttons")]
+    public XRSimpleInteractable answerA;
+    public XRSimpleInteractable answerB;
+    public XRSimpleInteractable answerC;
+    public XRSimpleInteractable answerD;
+
+    [Header("Navigation Buttons")]
+    public XRSimpleInteractable previousButton;
+    public XRSimpleInteractable nextButton;
+
+    [Header("Paper")]
     public TextMeshProUGUI paperText;
 
-    // Keeps track of the question number we are in
-    public int QuestionNumber = 0;
-    
-    // Testing for text on paper
+    [Header("Hide until exam begins")]
+    [Tooltip("Drag in Paper and Question1Colliders. These stay hidden until BeginExam() runs.")]
+    public GameObject[] examVisuals;
+
+    [Header("Testing")]
+    [Tooltip("ON = exam starts immediately on Play (skips Timeline). Turn OFF for the real build.")]
+    public bool beginOnStartForTesting = false;
+
+    // ---------------- RUNTIME STATE ----------------
+    private XRSimpleInteractable[] answerButtons;
+    private int currentIndex = 0;
+    private bool examStarted = false;
+    private bool examFinished = false;
+
+    // ---------------- SETUP ----------------
+    private void Awake()
+    {
+        PopulateDefaultQuestionsIfEmpty();
+
+        answerButtons = new XRSimpleInteractable[] { answerA, answerB, answerC, answerD };
+
+        foreach (var b in answerButtons)
+            if (b != null) b.selectEntered.AddListener(HandleAnswerPressed);
+
+        if (previousButton != null) previousButton.selectEntered.AddListener(HandlePreviousPressed);
+        if (nextButton != null)     nextButton.selectEntered.AddListener(HandleNextPressed);
+
+        SetVisuals(false); // hidden until the video finishes
+    }
+
     private void Start()
     {
-        if (questions.Length == 0)
+        if (beginOnStartForTesting) BeginExam();
+    }
+
+    private void OnDestroy()
+    {
+        if (answerButtons != null)
+            foreach (var b in answerButtons)
+                if (b != null) b.selectEntered.RemoveListener(HandleAnswerPressed);
+
+        if (previousButton != null) previousButton.selectEntered.RemoveListener(HandlePreviousPressed);
+        if (nextButton != null)     nextButton.selectEntered.RemoveListener(HandleNextPressed);
+    }
+
+    // ---------------- TIMELINE CALLS THIS ----------------
+    public void BeginExam()
+    {
+        if (questions == null || questions.Length == 0)
         {
-            questions = new Question[]{
-
-                new Question{
-                    questionString = "What did the elderly woman want when she held the man’s arm?",
-                    answerAText = "She was trying to avoid falling.",
-                    answerBText = "She wanted help crossing the street.",
-                    answerCText = "She wanted to go for a walk with him.",
-                    answerDText = "She mistook him for her son.",
-                    correctAnswerText = "She wanted help crossing the street."
-                },
-                new Question{
-                    questionString = "What decision did the man make after looking at his hand?",
-                    answerAText = "He wanted to play.",
-                    answerBText = "He decided to go to sleep.",
-                    answerCText = "He wanted to find someone he cared about.",
-                    answerDText = "He decided to help people.",
-                    correctAnswerText = "He decided to help people."
-                },
-                new Question{
-                    questionString = "Why did the man pretend to be blind?",
-                    answerAText = "He wanted the other man to help him.",
-                    answerBText = "He was hiding from another person.",
-                    answerCText = "He lost his ability to see.",
-                    answerDText = "He was conducting an experiment.",
-                    correctAnswerText = "He wanted the other man to help him."
-                }
-            };
-        }
-        
-
-
-        // Build the full exam text (currently, will not all fit on paper, will need to either decrease font or make different pages).
-        // Am leaning towards different pages, but for now just want to get the text on the paper and worry about formatting later.
-
-        string fullText = "";
-
-        for (int i = 0; i < questions.Length; i++)
-        {
-            fullText += questions[i].GetFormattedText(i + 1) + "\n";
-        }
-
-        // Set the paper text to the full exam text
-
-        paperText.text = fullText;
-
-        // If its null something wrong
-        if (paperText == null)
-        {
-            Debug.LogError("Paper Text is not assigned!");
+            Debug.LogError("Exam has no questions assigned!");
             return;
         }
 
+        examStarted = true;
+        examFinished = false;
+        currentIndex = 0;
+        foreach (var q in questions) q.selectedIndex = -1; // reset for retakes
+
+        SetVisuals(true);
+        RefreshPaper();
     }
 
+    // ---------------- BUTTON HANDLERS ----------------
+    private void HandleAnswerPressed(SelectEnterEventArgs args)
+    {
+        if (!examStarted || examFinished) return;
 
+        Transform pressed = args.interactableObject.transform;
+        int picked = System.Array.FindIndex(answerButtons, b => b != null && b.transform == pressed);
+        if (picked < 0) return;
 
-    void GradeExam()
+        questions[currentIndex].selectedIndex = picked;
+
+        // --- C1 hook: if you later want to highlight the physical button, do it here ---
+
+        RefreshPaper();
+        TryAutoGrade(); // D2: grade once everything is answered
+    }
+
+    private void HandlePreviousPressed(SelectEnterEventArgs args)
+    {
+        if (!examStarted || examFinished) return;
+        if (currentIndex > 0) { currentIndex--; RefreshPaper(); }
+    }
+
+    private void HandleNextPressed(SelectEnterEventArgs args)
+    {
+        if (!examStarted || examFinished) return;
+        if (currentIndex < questions.Length - 1) { currentIndex++; RefreshPaper(); }
+    }
+
+    // ---------------- DISPLAY ----------------
+    private void RefreshPaper()
+    {
+        if (paperText == null) { Debug.LogError("Paper Text is not assigned!"); return; }
+
+        Question q = questions[currentIndex];
+
+        string text = $"Question {currentIndex + 1} of {questions.Length}\n\n";
+        text += q.questionString + "\n\n";
+        text += FormatOption(0, "A", q.answerAText, q.selectedIndex);
+        text += FormatOption(1, "B", q.answerBText, q.selectedIndex);
+        text += FormatOption(2, "C", q.answerCText, q.selectedIndex);
+        text += FormatOption(3, "D", q.answerDText, q.selectedIndex);
+
+        paperText.text = text;
+    }
+
+    private string FormatOption(int index, string letter, string optionText, int selectedIndex)
+    {
+        string marker = (index == selectedIndex) ? "â–º " : "   "; // C2: marks the chosen answer
+        return $"{marker}{letter}. {optionText}\n";
+    }
+
+    // ---------------- GRADING (D2) ----------------
+    private void TryAutoGrade()
     {
         foreach (var q in questions)
-            q.GradeQuestion();
+            if (q.selectedIndex < 0) return; // something still unanswered
+
+        GradeExam();
+    }
+
+    private void GradeExam()
+    {
+        int correct = 0;
+        foreach (var q in questions)
+            if (q.selectedIndex == q.correctAnswerIndex) correct++;
+
+        examFinished = true;
+
+        paperText.text =
+            $"Exam Complete!\n\n" +
+            $"Score: {correct} / {questions.Length}\n\n" +
+            $"{Mathf.RoundToInt(100f * correct / questions.Length)}%";
+    }
+
+    // ---------------- HELPERS ----------------
+    private void SetVisuals(bool on)
+    {
+        if (examVisuals == null) return;
+        foreach (var go in examVisuals)
+            if (go != null) go.SetActive(on);
+    }
+
+    private void PopulateDefaultQuestionsIfEmpty()
+    {
+        if (questions != null && questions.Length > 0) return; // Inspector wins if filled
+
+        questions = new Question[]
+        {
+            new Question {
+                questionString = "What did the elderly woman want when she held the man's arm?",
+                answerAText = "She was trying to avoid falling.",
+                answerBText = "She wanted help crossing the street.",
+                answerCText = "She wanted to go for a walk with him.",
+                answerDText = "She mistook him for her son.",
+                correctAnswerIndex = 1  // B
+            },
+            new Question {
+                questionString = "What decision did the man make after looking at his hand?",
+                answerAText = "He wanted to play.",
+                answerBText = "He decided to go to sleep.",
+                answerCText = "He wanted to find someone he cared about.",
+                answerDText = "He decided to help people.",
+                correctAnswerIndex = 3  // D
+            },
+            new Question {
+                questionString = "Why did the man pretend to be blind?",
+                answerAText = "He wanted the other man to help him.",
+                answerBText = "He was hiding from another person.",
+                answerCText = "He lost his ability to see.",
+                answerDText = "He was conducting an experiment.",
+                correctAnswerIndex = 0  // A
+            }
+        };
     }
 }
