@@ -31743,7 +31743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6598815579406187037, guid: 19d18f5fdc9b0f9448ccb7d495d5dc8e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -38675,8 +38675,16 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3382981229898101399, guid: 5f6a89d8b5a407e478eb180baa5e1ff8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3382981229898101399, guid: 5f6a89d8b5a407e478eb180baa5e1ff8, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.019886889
+      objectReference: {fileID: 0}
+    - target: {fileID: 3382981229898101399, guid: 5f6a89d8b5a407e478eb180baa5e1ff8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.0000000134699
       objectReference: {fileID: 0}
     - target: {fileID: 4062250268212778818, guid: 5f6a89d8b5a407e478eb180baa5e1ff8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -38719,6 +38727,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4265843956521037348, guid: 5f6a89d8b5a407e478eb180baa5e1ff8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00000008530937
+      objectReference: {fileID: 0}
+    - target: {fileID: 4265843956521037348, guid: 5f6a89d8b5a407e478eb180baa5e1ff8, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.019886889
       objectReference: {fileID: 0}
@@ -38750,6 +38762,10 @@ PrefabInstance:
       propertyPath: deskB
       value: 
       objectReference: {fileID: 641241907}
+    - target: {fileID: 7705319792502378959, guid: 5f6a89d8b5a407e478eb180baa5e1ff8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.0625
+      objectReference: {fileID: 0}
     - target: {fileID: 8152085498425505200, guid: 5f6a89d8b5a407e478eb180baa5e1ff8, type: 3}
       propertyPath: m_Name
       value: Comfort Buttons
